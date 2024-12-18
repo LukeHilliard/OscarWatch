@@ -1,9 +1,17 @@
 {% extends "base.html" %}
-{% include "header.html" %}
 {% block title %}
 Home
 {% endblock %}
 {% block body %}
-<h1>Using template inheritance</h1>
+<div class="container text-center mt-5">
+    <h1>OscarWatch - Navigation Testing</h1>
+    <p>Use the buttons below to navigate between pages:</p>
 
+    <div class="d-flex justify-content-center flex-column align-items-center mt-4">
+        <p>This is for the sole purpose of testing and will be removed</p>
+        <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg mb-2" style="width: 200px;">Login Page</a>
+        <a href="{{ url_for('register') }}" class="btn btn-success btn-lg mb-2" style="width: 200px;">Register Page</a>
+        <a href="{{ url_for('home') }}" class="btn btn-info btn-lg" style="width: 200px;">Home Page</a>
+    </div>
+</div>
 {% endblock %}

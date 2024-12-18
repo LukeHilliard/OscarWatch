@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}
+Home - How is he?
+{% endblock %}
+{% block body %}
+<div id="home">
+    <a href="{{ url_for('login') }}" class="position-absolute" style="top: 10px; left: 10px;">
+        <i class="fa-solid fa-arrow-left fa-lg text-info"></i>
+    </a>
+    <h3>Home</h3>
+</div>
+{% endblock %}
