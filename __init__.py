@@ -1,33 +1,106 @@
-from flask import Flask, render_template, redirect, request
+import os
+import json
+import pathlib
+import requests
+from dotenv import load_dotenv
+from flask import Flask, render_template, redirect, request, abort, session
 
-from . import db
+from google.oauth2 import id_token
+from google_auth_oauthlib.flow import Flow
+from pip._vendor import cachecontrol
+import google.auth.transport.requests
+
+load_dotenv()
+
 
 app = Flask(__name__)
+app.secret_key = os.getenv("APP_SECRET_KEY")
+
+GOOGLE_CLIENT_ID = (os.getenv("GOOGLE_CLIENT_ID"))
+client_secrets_file = os.path.join(pathlib.Path(__file__).parent, ".client_secret.json")
+
+
+flow = Flow.from_client_secrets_file(
+    client_secrets_file=client_secrets_file,
+    scopes=[
+        "https://www.googleapis.com/auth/userinfo.profile",
+        "https://www.googleapis.com/auth/userinfo.email",
+        "openid",
+    ],
+    redirect_uri = "https://oscarwatch.online/callback",
+)
+
+def login_required(function):
+    def wrapper(*args, **kwargs):
+        if "google_id" not in session:
+            return abort(401)
+        else:
+            return function()
+    return wrapper
 
 @app.route('/')
 def index():
-    # if jwt is not valid return login page
-    # if jwt is valid return index
-    return render_template('index.html')
+    #if "google_id" in session:
+     #   return redirect('home.html')
+    return render_template("index.html")
 
-@app.route('/login', methods=["GET","POST"])
+@app.route('/login_with_google')
+def login_with_google():
+    authorization_url, state = flow.authorization_url()
+    session["state"] = state
+    return redirect(authorization_url)
+
+@app.route('/login_with_email')
+def login_with_email():
+    print("Logged in with email, redirecting to home")
+    return redirect("/home")
+
+@app.route("/callback")
+def callback():
+    flow.fetch_token(authorization_response=request.url)
+
+    if not session.get("state") == request.args.get("state"):
+        abort(500)  # States don't match
+
+    credentials = flow.credentials
+    request_session = requests.session()
+    cached_session = cachecontrol.CacheControl(request_session)
+    token_request = google.auth.transport.requests.Request(session=cached_session)
+
+    id_info = id_token.verify_oauth2_token(
+        id_token=credentials._id_token, request=token_request, audience=GOOGLE_CLIENT_ID
+    )
+
+    #session["google_id"] = id_info.get("sub")
+    #session["email"] = id_info.get("email")
+
+    #print(f"google_id = {session["google_id"]}\n")
+    #print(f"email = {session["email"]}\n")
+
+    print("Logged in with Google, redirected to home")
+    return redirect("/home")
+
+@app.route("/register_with_email")
+def register_with_email():
+    print("Registered with email, redirected to home")
+    return redirect("/home")
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect("/")
+
+
+
+
+# Page routes
+@app.route("/login")
 def login():
-    username_db = "luke"
-    password_db = "123"
-    if request.method == "POST":
-        username = request.form.get("username")
-        password = request.form.get("password")
-
-        if username == username_db and password == password_db:
-     
-            return redirect('home')  
-        else:
-            print("Invalid details")
-
-    return render_template('login.html')
+    return render_template("login.html")
 
 @app.route("/register")
 def register():
+    #print("From register router:" + session["google_id"])
     return render_template('register.html')
 
 @app.route('/home')
@@ -36,4 +109,4 @@ def home():
 
 if __name__ == "__main__":
 
-    app.run()
+    app.run(host="192.168.1.150", port=8080, debug=True)

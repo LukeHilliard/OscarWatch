@@ -16,16 +16,30 @@ def create_user(request: Request, user: User = Body(...)):
     )
     return created_user
 
+
 @router.get("/", response_description="List all users", response_model=List[User])
 def list_users(request: Request):
     users = list(request.app.database["users"].find(limit=100))
     return users
 
+
+# Get user by _id
 @router.get("/{id}", response_description="Get a user by id", response_model=User)
 def find_user(id: str, request: Request):
     if(user := request.app.database["users"].find_one({"_id": id})) is not None:
         return user
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User with ID {id} not found")
+
+
+# Get user by google_id
+@router.get("/google/{google_id}", response_description="Get a user by Google ID", response_model=User)
+def find_user_by_google_id(google_id: str, request: Request):
+    user = request.app.database["users"].find_one({"google_id": google_id})
+    if user:
+        return user
+    else:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"User with Google ID {google_id} not found")
+
 
 @router.put("/{id}", response_description="Update a user", response_model=User)
 def update_user(id: str, request: Request, user: UserUpdate = Body(...)):
@@ -44,6 +58,7 @@ def update_user(id: str, request: Request, user: UserUpdate = Body(...)):
         return existing_book
     
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User with {id} not found")
+    
     
 @router.delete("/{id}", response_description="Delete a user")
 def delete_user(id: str, request: Request, response: Response):

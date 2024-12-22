@@ -3,42 +3,82 @@
 register
 {% endblock %}
 {% block body %}
-<div id="register">
-    <a href="{{ url_for('login') }}" class="position-absolute" style="top: 10px; left: 10px;">
-        <i class="fa-solid fa-arrow-left fa-lg text-info"></i>
-    </a>
-    <h3 class="text-center text-white pt-5">Register form</h3>
-    <div class="container">
-        <div id="register-row" class="row justify-content-center align-items-center">
-            <div id="register-column" class="col-md-6">
-                <div id="register-box" class="col-md-12">
-
-                    <form id="register-form" class="form" action="{{ url_for('register') }}" method="POST">
-                        <h3 class="text-center text-info">Register</h3>
-                        <div class="form-group">
-                            <label for="username" class="text-info">Name:</label><br>
-                            <input type="text" name="username" id="username" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="email" class="text-info">Email:</label><br>
-                            <input type="email" name="email" id="email" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="password" class="text-info">Password:</label><br>
-                            <input type="password" name="password" id="password" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="confirm-password" class="text-info">Confirm Password:</label><br>
-                            <input type="password" name="confirm-password" id="confirm-password" class="form-control" required>
-                        </div>
-                        <div class="form-group d-flex justify-content-center">
-                            <input type="submit" class="btn btn-info btn-md" value="Register">
-                        </div>
-                    </form>
-
+<a href="/" class="position-absolute" style="top: 10px; left: 10px; font-size: 5rem; padding: 10px;">
+    <i class="fa-solid fa-arrow-left text-info"></i>
+</a>
+<section class="vh-100" style="background-color: #eee;">
+    <div class="container h-100">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+          <div class="card text-black" style="border-radius: 25px;">
+            <div class="card-body p-md-8">
+              <div class="row justify-content-center">
+                <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
+                    <div class="d-flex justify-content-center mb-3 pb-1">
+                        <span class="h1 fw-bold mb-0">
+                            <img src="../static/images/oscarwatch_logo.png" alt="OscarWatch Logo" style="max-width: 150px; height: auto;">
+                        </span>
+                    </div>
+                    <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Sign up</p>
+  
+                  <form class="mx-1 mx-md-4" action="/register_with_email">
+  
+                    <div class="d-flex flex-row align-items-center mb-4">
+                      <i class="fas fa-user fa-lg me-3 fa-fw"></i>
+                      <div data-mdb-input-init class="form-outline flex-fill mb-0">
+                        <input type="text" id="form3Example1c" class="form-control" required/>
+                        <label class="form-label" for="form3Example1c">Your Name</label>
+                      </div>
+                    </div>
+  
+                    <div class="d-flex flex-row align-items-center mb-4">
+                      <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
+                      <div data-mdb-input-init class="form-outline flex-fill mb-0">
+                        <input type="email" id="form3Example3c" class="form-control" required/>
+                        <label class="form-label" for="form3Example3c">Your Email</label>
+                      </div>
+                    </div>
+  
+                    <div class="d-flex flex-row align-items-center mb-4">
+                      <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
+                      <div data-mdb-input-init class="form-outline flex-fill mb-0">
+                        <input type="password" id="form3Example4c" class="form-control" required/>
+                        <label class="form-label" for="form3Example4c">Password</label>
+                      </div>
+                    </div>
+  
+                    <div class="d-flex flex-row align-items-center mb-4">
+                      <i class="fas fa-key fa-lg me-3 fa-fw"></i>
+                      <div data-mdb-input-init class="form-outline flex-fill mb-0">
+                        <input type="password" id="form3Example4cd" class="form-control" required/>
+                        <label class="form-label" for="form3Example4cd">Repeat your password</label>
+                      </div>
+                    </div>
+  
+                    <div class="form-check d-flex justify-content-center mb-5">
+                      <input class="form-check-input me-2" type="checkbox" value="" id="form2Example3c" required/>
+                      <label class="form-check-label" for="form2Example3">
+                        I agree all statements in <a href="#!">Terms of service</a>
+                      </label>
+                    </div>
+  
+                    <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
+                      <button  type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-lg">Register</button>
+                    </div>
+  
+                  </form>
+  
                 </div>
+                <div class="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2">
+  
+                  <img src="../static/images/IMG_2535.png"
+                    class="img-fluid" alt="Sample image"
+                    />
+  
+                </div>
+              </div>
             </div>
+          </div>
         </div>
-    </div>
-</div>
+      </div>
+  </section>
 {% endblock %}
