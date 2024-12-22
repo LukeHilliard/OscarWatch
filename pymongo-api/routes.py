@@ -31,14 +31,16 @@ def find_user(id: str, request: Request):
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User with ID {id} not found")
 
 
-# Get user by google_id
-@router.get("/google/{google_id}", response_description="Get a user by Google ID", response_model=User)
+# Check if a users exists based on google_id
+@router.get("/google/{google_id}", response_description="Get a user by Google ID")
 def find_user_by_google_id(google_id: str, request: Request):
     user = request.app.database["users"].find_one({"google_id": google_id})
     if user:
-        return user
+        print("User does exist with google_id:{google_id}")
+        return {"exists": "True"}
     else:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"User with Google ID {google_id} not found")
+        print("User does not exist")
+        return {"exists": "False"}
 
 
 @router.put("/{id}", response_description="Update a user", response_model=User)

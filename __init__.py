@@ -10,15 +10,16 @@ from google_auth_oauthlib.flow import Flow
 from pip._vendor import cachecontrol
 import google.auth.transport.requests
 
-load_dotenv()
+load_dotenv(override=True)
 
 
 app = Flask(__name__)
 app.secret_key = os.getenv("APP_SECRET_KEY")
 
+
+# --- Setup Google OAuth
 GOOGLE_CLIENT_ID = (os.getenv("GOOGLE_CLIENT_ID"))
 client_secrets_file = os.path.join(pathlib.Path(__file__).parent, ".client_secret.json")
-
 
 flow = Flow.from_client_secrets_file(
     client_secrets_file=client_secrets_file,
@@ -29,6 +30,8 @@ flow = Flow.from_client_secrets_file(
     ],
     redirect_uri = "https://oscarwatch.online/callback",
 )
+
+api_url = "https://api.oscarwatch.online/api"
 
 def login_required(function):
     def wrapper(*args, **kwargs):
@@ -71,11 +74,29 @@ def callback():
         id_token=credentials._id_token, request=token_request, audience=GOOGLE_CLIENT_ID
     )
 
-    #session["google_id"] = id_info.get("sub")
-    #session["email"] = id_info.get("email")
+    session["google_id"] = id_info.get("sub")
+    session["email"] = id_info.get("email")
+    session["name"] = id_info.get("name")
 
-    #print(f"google_id = {session["google_id"]}\n")
-    #print(f"email = {session["email"]}\n")
+    print(f"google_id = {session["google_id"]}")
+    print(f"email = {session["email"]}")
+    print(f"name = {session["name"]}")
+
+    # 
+    endpoint_url = f"{api_url}/google/{session["google_id"]}"
+    try:
+        response = requests.get(endpoint_url)
+        data = response.json() 
+        print(data)
+        if data["exists"] == True: 
+            print("User exists, redirecting to home")
+            return redirect("/home")
+        else:
+            print("User does not exist, redirecting to register")
+            return redirect("/register")
+    except Exception as e:
+        print(f"Error: {e}")
+
 
     print("Logged in with Google, redirected to home")
     return redirect("/home")
@@ -102,6 +123,7 @@ def login():
 def register():
     #print("From register router:" + session["google_id"])
     return render_template('register.html')
+
 
 @app.route('/home')
 def home():
