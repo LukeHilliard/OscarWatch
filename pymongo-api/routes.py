@@ -1,15 +1,28 @@
 # To create this I followed this tutorial - https://www.mongodb.com/resources/languages/pymongo-tutorial
 from fastapi import APIRouter, Body, Request, Response, HTTPException, status
 from fastapi.encoders import jsonable_encoder
+from fastapi.responses import JSONResponse
 from typing import List
 
 from models import User, UserUpdate
 
 router = APIRouter()
 
+
+# add a new user to collection
 @router.post("/", response_description="Create a new user", status_code=status.HTTP_201_CREATED, response_model=User)
 def create_user(request: Request, user: User = Body(...)):
     user = jsonable_encoder(user)
+
+    # check if user with the same email or Google ID already exists
+    existing_user = request.app.database["users"].find_one({
+        "$or": [{"email": user.get("email")}, {"google_id": user.get("google_id")}]
+    })
+
+    if existing_user:
+        raise HTTPException(status_code=400, detail="User with the given email or Google ID already exists.")
+
+    # insert the new user
     new_user = request.app.database["users"].insert_one(user)
     created_user = request.app.database["users"].find_one(
         {"_id": new_user.inserted_id}
@@ -17,21 +30,8 @@ def create_user(request: Request, user: User = Body(...)):
     return created_user
 
 
-@router.get("/", response_description="List all users", response_model=List[User])
-def list_users(request: Request):
-    users = list(request.app.database["users"].find(limit=100))
-    return users
 
-
-# Get user by _id
-@router.get("/{id}", response_description="Get a user by id", response_model=User)
-def find_user(id: str, request: Request):
-    if(user := request.app.database["users"].find_one({"_id": id})) is not None:
-        return user
-    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User with ID {id} not found")
-
-
-# Check if a users exists based on google_id
+# check if a users exists based on google_id
 @router.get("/google/{google_id}", response_description="Get a user by Google ID")
 def find_user_by_google_id(google_id: str, request: Request):
     user = request.app.database["users"].find_one({"google_id": google_id})
@@ -41,6 +41,24 @@ def find_user_by_google_id(google_id: str, request: Request):
     else:
         print("User does not exist")
         return {"exists": "False"}
+    
+
+    
+
+@router.get("/", response_description="List all users", response_model=List[User])
+def list_users(request: Request):
+    users = list(request.app.database["users"].find(limit=100))
+    return users
+
+
+
+# Get user by _id
+@router.get("/{id}", response_description="Get a user by id", response_model=User)
+def find_user(id: str, request: Request):
+    if(user := request.app.database["users"].find_one({"_id": id})) is not None:
+        return user
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User with ID {id} not found")
+
 
 
 @router.put("/{id}", response_description="Update a user", response_model=User)
@@ -62,6 +80,7 @@ def update_user(id: str, request: Request, user: UserUpdate = Body(...)):
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User with {id} not found")
     
     
+    
 @router.delete("/{id}", response_description="Delete a user")
 def delete_user(id: str, request: Request, response: Response):
     delete_result = request.app.database["users"].delete_one({"_id": id})
@@ -70,4 +89,6 @@ def delete_user(id: str, request: Request, response: Response):
         response.status_code = status.HTTP_204_NO_CONTENT
         return response
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User with {id} not found")
+    
+
     

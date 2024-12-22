@@ -3,7 +3,7 @@ import json
 import pathlib
 import requests
 from dotenv import load_dotenv
-from flask import Flask, render_template, redirect, request, abort, session
+from flask import Flask, render_template, redirect, request, abort, session, url_for
 
 from google.oauth2 import id_token
 from google_auth_oauthlib.flow import Flow
@@ -17,7 +17,7 @@ app = Flask(__name__)
 app.secret_key = os.getenv("APP_SECRET_KEY")
 
 
-# --- Setup Google OAuth
+# --- Setup Google OAuth ---
 GOOGLE_CLIENT_ID = (os.getenv("GOOGLE_CLIENT_ID"))
 client_secrets_file = os.path.join(pathlib.Path(__file__).parent, ".client_secret.json")
 
@@ -40,23 +40,6 @@ def login_required(function):
         else:
             return function()
     return wrapper
-
-@app.route('/')
-def index():
-    #if "google_id" in session:
-     #   return redirect('home.html')
-    return render_template("index.html")
-
-@app.route('/login_with_google')
-def login_with_google():
-    authorization_url, state = flow.authorization_url()
-    session["state"] = state
-    return redirect(authorization_url)
-
-@app.route('/login_with_email')
-def login_with_email():
-    print("Logged in with email, redirecting to home")
-    return redirect("/home")
 
 @app.route("/callback")
 def callback():
@@ -93,13 +76,65 @@ def callback():
             return redirect("/home")
         else:
             print("User does not exist, redirecting to register")
-            return redirect("/register")
+            return redirect("/register_with_google")
     except Exception as e:
         print(f"Error: {e}")
 
 
     print("Logged in with Google, redirected to home")
     return redirect("/home")
+
+
+# --- end of Google OAuth ---
+
+
+@app.route('/')
+def index():
+    #if "google_id" in session:
+     #   return redirect('home.html')
+    return render_template("index.html")
+
+@app.route("/login")
+def login():
+    return render_template("login.html")
+
+@app.route("/register")
+def register():
+    name = request.args.get("name", "")
+    email = request.args.get("email", "")
+    google_id = request.args.get("google_id", "")
+
+    return render_template("register.html", name=name, email=email, google_id=google_id)
+
+@app.route("/register_with_google")
+def register_with_google():
+    # get name and email from session, these are added to input boxes for
+    name = session["name"]
+    email = session["email"]
+    google_id = session["google_id"]
+    
+    # if name and email are provided, redirect directly to /register
+    return redirect(url_for("register", name=name, email=email, google_id=google_id))
+
+@app.route("/home")
+def home():
+    return render_template('home.html')
+
+
+
+
+
+@app.route('/login_with_google')
+def login_with_google():
+    authorization_url, state = flow.authorization_url()
+    session["state"] = state
+    return redirect(authorization_url)
+
+@app.route('/login_with_email')
+def login_with_email():
+    print("Logged in with email, redirecting to home")
+    return redirect("/home")
+
 
 @app.route("/register_with_email")
 def register_with_email():
@@ -111,24 +146,6 @@ def logout():
     session.clear()
     return redirect("/")
 
-
-
-
-# Page routes
-@app.route("/login")
-def login():
-    return render_template("login.html")
-
-@app.route("/register")
-def register():
-    #print("From register router:" + session["google_id"])
-    return render_template('register.html')
-
-
-@app.route('/home')
-def home():
-    return render_template('home.html')
-
 if __name__ == "__main__":
 
-    app.run(host="192.168.1.150", port=8080, debug=True)
+    app.run(debug=True)
