@@ -102,19 +102,21 @@ def login():
 def register():
     name = request.args.get("name", "")
     email = request.args.get("email", "")
+    google_id = request.args.get("google_id", "")
 
-    return render_template("register.html", name=name, email=email)
+    return render_template("register.html", name=name, email=email, google_id=google_id)
 
 @app.route("/register_with_google")
 def register_with_google():
     # get name and email from session, these are added to input boxes for
     name = session["name"]
     email = session["email"]
+    google_id = session["google_id"]
     
     # if name and email are provided, redirect directly to /register
-    return redirect(url_for("register", name=name, email=email))
+    return redirect(url_for("register", name=name, email=email, google_id=google_id))
 
-@app.route('/home')
+@app.route("/home")
 def home():
     return render_template('home.html')
 
@@ -146,4 +148,4 @@ def logout():
 
 if __name__ == "__main__":
 
-    app.run()
+    app.run(debug=True)
