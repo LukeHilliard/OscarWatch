@@ -5,7 +5,7 @@ from pydantic import BaseModel, Field
 
 class User(BaseModel):
     id: str = Field(default_factory=uuid.uuid4, alias="_id")
-    user_id: str = Field(...)
+    google_id: str = Field(...)
     name: str = Field(...)
     password: str = Field(...)
     token: str = Field(...)
@@ -19,7 +19,7 @@ class User(BaseModel):
         schema_extra = {
             "example": {
                 "_id": "066de609-b04a-4b30-b46c-32537c7f1f6e",
-                "user_id": "5",
+                "google_id": "797400394613-tujs6brhho0g70uudu6cubn83pm64mpo.apps.googleusercontent.com",
                 "name": "Luke",
                 "password": "wijpyf-pYjbu3-pesmep",
                 "token": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjUxZDcxYzE3MjhjZTgyNDNiZmM5ZWU2NWFjYjhkMTI3NThjZmViOTgiLCJ0eXAiOiJKV1QifQ...",
@@ -42,7 +42,7 @@ class UserUpdate(BaseModel):
         schema_extra = {
             "example": {
                 "_id": "066de609-b04a-4b30-b46c-32537c7f1f6e",
-                "user_id": "5",
+                "google_id": "797400394613-tujs6brhho0g70uudu6cubn83pm64mpo.apps.googleusercontent.com",
                 "name": "Luke Hilliard",
                 "password": "wijpyf-pYjbu3-pesmep",
                 "token": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjUxZDcxYzE3MjhjZTgyNDNiZmM5ZWU2NWFjYjhkMTI3NThjZmViOTgiLCJ0eXAiOiJKV1QifQ...",

@@ -2,6 +2,7 @@
 from fastapi import FastAPI
 from dotenv import load_dotenv
 from pymongo import MongoClient
+from routes import router as user_router
 import os
 load_dotenv()
 app = FastAPI()
@@ -20,3 +21,4 @@ def shutdown_db_client():
 async def root():
     return {"message": "Welcome to the PyMongo tutorial!"}
 
+app.include_router(user_router, prefix="/api", tags=["users"])
