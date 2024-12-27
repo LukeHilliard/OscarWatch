@@ -48,6 +48,7 @@ def callback():
     if not session.get("state") == request.args.get("state"):
         abort(500)  # States don't match
 
+
     credentials = flow.credentials
     request_session = requests.session()
     cached_session = cachecontrol.CacheControl(request_session)
@@ -56,23 +57,28 @@ def callback():
     id_info = id_token.verify_oauth2_token(
         id_token=credentials._id_token, request=token_request, audience=GOOGLE_CLIENT_ID
     )
-
     session["google_id"] = id_info.get("sub")
     session["email"] = id_info.get("email")
     session["name"] = id_info.get("name")
-
+    print("FLASK_SERVER: /login_with_google successful, checking if google_id is stored in 'users' collection")
     print(f"google_id = {session["google_id"]}")
     print(f"email = {session["email"]}")
     print(f"name = {session["name"]}")
 
-    # 
-    endpoint_url = f"{api_url}/google/{session["google_id"]}"
+    endpoint_url = f"{api_url}/check_if_exists/{session["email"]}"
+    print(f"FLASK_SERVER: sending request - {endpoint_url}")
+
     try:
         response = requests.get(endpoint_url)
         data = response.json() 
-        print(data)
-        if data["exists"] == True: 
+
+
+        # TODO when a user creates an account without google, then decides to log in with google, 
+        # store the google_id in mongoDB users collection
+        print(f"response: {data}")
+        if data["exists"] == "True": 
             print("User exists, redirecting to home")
+            session["id"] = data["id"]
             return redirect("/home")
         else:
             print("User does not exist, redirecting to register")
@@ -85,7 +91,24 @@ def callback():
     return redirect("/home")
 
 
+@app.route('/login_with_google')
+def login_with_google():
+    authorization_url, state = flow.authorization_url()
+    session["state"] = state
+    print(f"STATE: {state}")
+    return redirect(authorization_url)
+
+@app.route("/register_with_google")
+def register_with_google():
+    # get name and email from session, these are added to input boxes for
+    name = session["name"]
+    email = session["email"]
+    google_id = session["google_id"]
+    
+    # if name and email are provided, redirect directly to /register
+    return redirect(url_for("register", name=name, email=email, google_id=google_id))
 # --- end of Google OAuth ---
+
 
 
 @app.route('/')
@@ -98,6 +121,7 @@ def index():
 def login():
     return render_template("login.html")
 
+
 @app.route("/register")
 def register():
     name = request.args.get("name", "")
@@ -106,40 +130,18 @@ def register():
 
     return render_template("register.html", name=name, email=email, google_id=google_id)
 
-@app.route("/register_with_google")
-def register_with_google():
-    # get name and email from session, these are added to input boxes for
-    name = session["name"]
-    email = session["email"]
-    google_id = session["google_id"]
-    
-    # if name and email are provided, redirect directly to /register
-    return redirect(url_for("register", name=name, email=email, google_id=google_id))
+
+@app.route('/login_with_email/<user_id>', methods=["GET"])
+def login_with_email(user_id):
+    session["id"] = user_id
+    print(f"User logged in with ID: {user_id}")
+
+    return redirect("/home")
+
 
 @app.route("/home")
 def home():
-    return render_template('home.html')
-
-
-
-
-
-@app.route('/login_with_google')
-def login_with_google():
-    authorization_url, state = flow.authorization_url()
-    session["state"] = state
-    return redirect(authorization_url)
-
-@app.route('/login_with_email')
-def login_with_email():
-    print("Logged in with email, redirecting to home")
-    return redirect("/home")
-
-
-@app.route("/register_with_email")
-def register_with_email():
-    print("Registered with email, redirected to home")
-    return redirect("/home")
+    return render_template('home.html', id=session["id"])
 
 @app.route("/logout")
 def logout():
@@ -147,5 +149,4 @@ def logout():
     return redirect("/")
 
 if __name__ == "__main__":
-
-    app.run(debug=True)
+    app.run()

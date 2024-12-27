@@ -1,6 +1,7 @@
 # To create this I followed this tutorial - https://www.mongodb.com/resources/languages/pymongo-tutorial
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.sessions import SessionMiddleware
 
 from dotenv import load_dotenv
 from pymongo import MongoClient
@@ -17,7 +18,9 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    
 )
+
 
 @app.on_event("startup")
 def startup_db_client():
@@ -32,7 +35,7 @@ def shutdown_db_client():
 
 @app.get("/")
 async def root():
-    return {"message": "Welcome to the PyMongo tutorial!"}
+    return {"message": "OscarWatch API Server"}
 
 @app.get("/test_db")
 def test_db():

@@ -1,4 +1,6 @@
 # To create this I followed this tutorial - https://www.mongodb.com/resources/languages/pymongo-tutorial
+# Request Body: https://fastapi.tiangolo.com/tutorial/body/
+
 import uuid
 from typing import Optional
 from pydantic import BaseModel, Field
@@ -59,3 +61,7 @@ class UserUpdate(BaseModel):
                 "is_admin": "0",
             }
         }
+
+class LoginRequest(BaseModel):
+    email: str
+    password: str
