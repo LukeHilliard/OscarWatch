@@ -1,6 +1,7 @@
 # To create this I followed this tutorial - https://www.mongodb.com/resources/languages/pymongo-tutorial
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.sessions import SessionMiddleware
 
 from dotenv import load_dotenv
 from pymongo import MongoClient
@@ -17,7 +18,9 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    
 )
+
 
 @app.on_event("startup")
 def startup_db_client():

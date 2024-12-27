@@ -4,7 +4,7 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from typing import List
 
-from models import User, UserUpdate
+from models import * 
 
 router = APIRouter()
 
@@ -13,11 +13,11 @@ router = APIRouter()
 @router.post("/", response_description="Create a new user", status_code=status.HTTP_201_CREATED, response_model=User)
 def create_user(request: Request, user: User = Body(...)):
     user = jsonable_encoder(user)
-    print("users to be added :" + user)
+    print(f"users to be added : {user}")
 
     # check if user with the same email or Google ID already exists
     existing_user = request.app.database["users"].find_one({
-        "$or": [{"email": user.get("email")}, {"google_id": user.get("google_id")}]
+        "$or": [{"email": user.get("email")}]
     })
 
     if existing_user:
@@ -29,30 +29,45 @@ def create_user(request: Request, user: User = Body(...)):
         {"_id": new_user.inserted_id}
     )
     return created_user
+    
 
+# login with email and password
+@router.post("/login", response_description="Login with email")
+def login(request: Request, loginDetails: LoginRequest = Body(...)):
+    email = loginDetails.email
+    password = loginDetails.password
 
+    user = request.app.database["users"].find_one({"email": email})
 
-# check if a users exists based on google_id
-@router.get("/google/{google_id}", response_description="Get a user by Google ID")
-def find_user_by_google_id(google_id: str, request: Request):
-    user = request.app.database["users"].find_one({"google_id": google_id})
+    # TODO add hash comparison logic here 
+    if user: # matching email found
+        if user["password"] == password: # check passwords
+            return { "login": "True", "id": user["_id"]}
+        else:
+            print(f"Incorrect password entered on account {user["_id"]}")
+            return { "login": "False", "cause": "password" }  
+    else:
+        print("Email not found within 'users' collection")
+        return { "login": "False", "cause": "email" }    
+
+# check if a users exists based on email
+@router.get("/check_if_exists/{email}", response_description="Check if a user exists via email")
+def find_user_by_email(email: str, request: Request):
+    user = request.app.database["users"].find_one({"email": email})
     if user:
-        print("User does exist with google_id:{google_id}")
-        return {"exists": "True"}
+        print("User does exist with email:{email}")
+        return { "exists": "True", "id": user["_id"] }
     else:
         print("User does not exist")
-        return {"exists": "False"}
+        return { "exists": "False" }
     
 
-    
-    
+
 
 @router.get("/", response_description="List all users", response_model=List[User])
 def list_users(request: Request):
     users = list(request.app.database["users"].find(limit=100))
     return users
-
-
 
 # Get user by _id
 @router.get("/{id}", response_description="Get a user by id", response_model=User)
@@ -61,6 +76,7 @@ def find_user(id: str, request: Request):
         return user
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User with ID {id} not found")
 
+    
 
 
 @router.put("/{id}", response_description="Update a user", response_model=User)

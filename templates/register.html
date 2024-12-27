@@ -22,17 +22,16 @@ register
                   <form class="mx-1 mx-md-4" id="register-form">
   
                     <!-- hidden google_id -->
-                    {% if google_id %}
-                    <input type="hidden" id="google_id" name="google_id" value="{{ google_id }}" />
-                    {% endif %}
+                    <input type="hidden" id="google_id" name="google_id" value="{{ google_id if google_id else '' }}" />
+
 
                     <div class="d-flex flex-row align-items-center mb-4">
                       <i class="fas fa-user fa-lg me-3 fa-fw"></i>
                       <div data-mdb-input-init class="form-outline flex-fill mb-0">
                         {% if name %}
-                            <input type="text" id="name" class="form-control" required value="{{ name }}"/>
+                            <input type="text" id="name" class="form-control" required autocomplete="off" value="{{ name }}" />
                         {% else %}
-                            <input type="text" id="name" class="form-control" required />
+                            <input type="text" id="name" class="form-control" required autocomplete="off"/>
                         {% endif %}
                         <label class="form-label" for="name">Your Name</label>
                       </div>
@@ -42,9 +41,9 @@ register
                       <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
                       <div data-mdb-input-init class="form-outline flex-fill mb-0">
                         {% if email %}
-                            <input type="email" id="email" class="form-control" required value="{{ email }}"/>
+                            <input type="email" id="email" class="form-control" required autocomplete="off" value="{{ email }}"/>
                         {% else %}
-                            <input type="email" id="email" class="form-control" required/>
+                            <input type="email" id="email" class="form-control" required autocomplete="off"/>
                         {% endif %}
                         <label class="form-label" for="email">Your Email</label>
                       </div>
@@ -53,7 +52,7 @@ register
                     <div class="d-flex flex-row align-items-center mb-4">
                       <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
                       <div data-mdb-input-init class="form-outline flex-fill mb-0">
-                        <input type="password" id="password" class="form-control" required/>
+                        <input type="password" id="password" class="form-control" required autocomplete="off"/>
                         <label class="form-label" for="password">Password</label>
                       </div>
                     </div>
@@ -61,7 +60,7 @@ register
                     <div class="d-flex flex-row align-items-center mb-4">
                       <i class="fas fa-key fa-lg me-3 fa-fw"></i>
                       <div data-mdb-input-init class="form-outline flex-fill mb-0">
-                        <input type="password" id="confirm-password" class="form-control" required/>
+                        <input type="password" id="confirm-password" class="form-control" required autocomplete="off"/>
                         <label class="form-label" for="confirm">Repeat your password</label>
                       </div>
                     </div>
@@ -69,7 +68,7 @@ register
                     
   
                     <div class="form-check d-flex justify-content-center mb-5">
-                      <input class="form-check-input me-2" type="checkbox" value="" id="form2Example3c" required/>
+                      <input class="form-check-input me-2" type="checkbox" value="" id="form2Example3c" required autocomplete="off"/>
                       <label class="form-check-label" for="form2Example3">
                         I agree all statements in <a href="#!">Terms of service</a>
                       </label>
@@ -123,17 +122,17 @@ register
         })
 
         if (response.ok) {
-          const result = await response.json();
-          console.log('User created:', result);
+          const result = await response.json()
+          console.log('User created:', result)
 
           const doesExist =  result.exists
           console.log("does user exists? : " + doesExist)
 
           window.location.href = '/login'; // redirect to login page
         } else {
-          const errorData = await response.json();
-          console.error('Failed to create user:', errorData);
-          alert('Registration failed. ' + errorData.detail);
+          const errorData = await response.json()
+          console.error('Failed to create user:', errorData)
+          alert('Registration failed. ' + errorData.detail)
         }
 
       } catch (error) {

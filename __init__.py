@@ -65,16 +65,20 @@ def callback():
     print(f"email = {session["email"]}")
     print(f"name = {session["name"]}")
 
-    endpoint_url = f"{api_url}/google/{session["google_id"]}"
+    endpoint_url = f"{api_url}/check_if_exists/{session["email"]}"
     print(f"FLASK_SERVER: sending request - {endpoint_url}")
 
     try:
         response = requests.get(endpoint_url)
-
         data = response.json() 
-        print(f"response: {session["google_id"]} : {data}")
+
+
+        # TODO when a user creates an account without google, then decides to log in with google, 
+        # store the google_id in mongoDB users collection
+        print(f"response: {data}")
         if data["exists"] == "True": 
             print("User exists, redirecting to home")
+            session["id"] = data["id"]
             return redirect("/home")
         else:
             print("User does not exist, redirecting to register")
@@ -117,6 +121,7 @@ def index():
 def login():
     return render_template("login.html")
 
+
 @app.route("/register")
 def register():
     name = request.args.get("name", "")
@@ -126,21 +131,17 @@ def register():
     return render_template("register.html", name=name, email=email, google_id=google_id)
 
 
-@app.route('/login_with_email')
-def login_with_email():
-    print("Logged in with email, redirecting to home")
-    return redirect("/home")
+@app.route('/login_with_email/<user_id>', methods=["GET"])
+def login_with_email(user_id):
+    session["id"] = user_id
+    print(f"User logged in with ID: {user_id}")
 
-
-@app.route("/register_with_email")
-def register_with_email():
-    print("Registered with email, redirected to home")
     return redirect("/home")
 
 
 @app.route("/home")
 def home():
-    return render_template('home.html')
+    return render_template('home.html', id=session["id"])
 
 @app.route("/logout")
 def logout():
