@@ -112,6 +112,7 @@ register
         is_admin: "0"
       }
 
+      console.log("user data: " + user)
       try {
         const response = await fetch('https://api.oscarwatch.online/api/',{
           method: 'POST',
@@ -124,6 +125,10 @@ register
         if (response.ok) {
           const result = await response.json();
           console.log('User created:', result);
+
+          const doesExist =  result.exists
+          console.log("does user exists? : " + doesExist)
+
           window.location.href = '/login'; // redirect to login page
         } else {
           const errorData = await response.json();

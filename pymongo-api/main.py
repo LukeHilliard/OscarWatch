@@ -32,7 +32,7 @@ def shutdown_db_client():
 
 @app.get("/")
 async def root():
-    return {"message": "Welcome to the PyMongo tutorial!"}
+    return {"message": "OscarWatch API Server"}
 
 @app.get("/test_db")
 def test_db():

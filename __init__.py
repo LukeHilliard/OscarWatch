@@ -48,6 +48,7 @@ def callback():
     if not session.get("state") == request.args.get("state"):
         abort(500)  # States don't match
 
+
     credentials = flow.credentials
     request_session = requests.session()
     cached_session = cachecontrol.CacheControl(request_session)
@@ -56,22 +57,23 @@ def callback():
     id_info = id_token.verify_oauth2_token(
         id_token=credentials._id_token, request=token_request, audience=GOOGLE_CLIENT_ID
     )
-
     session["google_id"] = id_info.get("sub")
     session["email"] = id_info.get("email")
     session["name"] = id_info.get("name")
-
+    print("FLASK_SERVER: /login_with_google successful, checking if google_id is stored in 'users' collection")
     print(f"google_id = {session["google_id"]}")
     print(f"email = {session["email"]}")
     print(f"name = {session["name"]}")
 
-    # 
     endpoint_url = f"{api_url}/google/{session["google_id"]}"
+    print(f"FLASK_SERVER: sending request - {endpoint_url}")
+
     try:
         response = requests.get(endpoint_url)
+
         data = response.json() 
-        print(data)
-        if data["exists"] == True: 
+        print(f"response: {session["google_id"]} : {data}")
+        if data["exists"] == "True": 
             print("User exists, redirecting to home")
             return redirect("/home")
         else:
@@ -85,7 +87,24 @@ def callback():
     return redirect("/home")
 
 
+@app.route('/login_with_google')
+def login_with_google():
+    authorization_url, state = flow.authorization_url()
+    session["state"] = state
+    print(f"STATE: {state}")
+    return redirect(authorization_url)
+
+@app.route("/register_with_google")
+def register_with_google():
+    # get name and email from session, these are added to input boxes for
+    name = session["name"]
+    email = session["email"]
+    google_id = session["google_id"]
+    
+    # if name and email are provided, redirect directly to /register
+    return redirect(url_for("register", name=name, email=email, google_id=google_id))
 # --- end of Google OAuth ---
+
 
 
 @app.route('/')
@@ -106,29 +125,6 @@ def register():
 
     return render_template("register.html", name=name, email=email, google_id=google_id)
 
-@app.route("/register_with_google")
-def register_with_google():
-    # get name and email from session, these are added to input boxes for
-    name = session["name"]
-    email = session["email"]
-    google_id = session["google_id"]
-    
-    # if name and email are provided, redirect directly to /register
-    return redirect(url_for("register", name=name, email=email, google_id=google_id))
-
-@app.route("/home")
-def home():
-    return render_template('home.html')
-
-
-
-
-
-@app.route('/login_with_google')
-def login_with_google():
-    authorization_url, state = flow.authorization_url()
-    session["state"] = state
-    return redirect(authorization_url)
 
 @app.route('/login_with_email')
 def login_with_email():
@@ -141,11 +137,15 @@ def register_with_email():
     print("Registered with email, redirected to home")
     return redirect("/home")
 
+
+@app.route("/home")
+def home():
+    return render_template('home.html')
+
 @app.route("/logout")
 def logout():
     session.clear()
     return redirect("/")
 
 if __name__ == "__main__":
-
-    app.run(debug=True)
+    app.run()

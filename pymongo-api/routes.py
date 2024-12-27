@@ -13,6 +13,7 @@ router = APIRouter()
 @router.post("/", response_description="Create a new user", status_code=status.HTTP_201_CREATED, response_model=User)
 def create_user(request: Request, user: User = Body(...)):
     user = jsonable_encoder(user)
+    print("users to be added :" + user)
 
     # check if user with the same email or Google ID already exists
     existing_user = request.app.database["users"].find_one({
@@ -43,6 +44,7 @@ def find_user_by_google_id(google_id: str, request: Request):
         return {"exists": "False"}
     
 
+    
     
 
 @router.get("/", response_description="List all users", response_model=List[User])
