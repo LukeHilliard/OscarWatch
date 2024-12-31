@@ -69,3 +69,6 @@ class UserUpdate(BaseModel):
 class LoginRequest(BaseModel):
     email: str
     password: str
+
+class LogoutRequest(BaseModel):
+    id: str

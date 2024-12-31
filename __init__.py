@@ -147,10 +147,24 @@ def login_with_email(user_id):
 def home():
     return render_template('home.html', id=session["id"])
 
-@app.route("/logout")
+@app.route("/logout", methods=["GET"])
 def logout():
-    session.clear()
-    return redirect("/")
+    try:
+        print(f" \n\n\n\nTrying to logout with id-{session['id']}")
+        response = requests.post(f"{api_url}/logout/{session['id']}")
+        data = response.json()
+        print(f"response from logout: {data}")
+
+        if response.status_code == 200:
+            data = response.json()
+            if data["logout"] == "True":
+                print(f"FLASK SERVER: LOGGING OUT USER {id}")
+                session.clear()
+                return redirect("/")
+            else:
+                print(f"FLASK SERVER: ** FAILED ** LOGGING OUT USER {id}")
+    except Exception as e:
+        print(f"Error logging out: {e}")
 
 if __name__ == "__main__":
     app.run(debug=True)
