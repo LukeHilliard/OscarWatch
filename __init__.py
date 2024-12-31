@@ -61,6 +61,7 @@ def callback():
     session["google_id"] = id_info.get("sub")
     session["email"] = id_info.get("email")
     session["name"] = id_info.get("name")
+    session["google_profile_picture"] = id_info.get("picture")
     print("FLASK_SERVER: /login_with_google successful, checking if email is stored in 'users' collection")
     print(f"google_id = {session["google_id"]}")
     print(f"email = {session["email"]}")
@@ -105,9 +106,10 @@ def register_with_google():
     name = session["name"]
     email = session["email"]
     google_id = session["google_id"]
+    profile_picture = session["google_profile_picture"]
     
     # if name and email are provided, redirect directly to /register
-    return redirect(url_for("register", name=name, email=email, google_id=google_id))
+    return redirect(url_for("register", name=name, email=email, google_id=google_id, profile_picture=profile_picture))
 # --- end of Google OAuth ---
 
 
@@ -128,8 +130,9 @@ def register():
     name = request.args.get("name", "")
     email = request.args.get("email", "")
     google_id = request.args.get("google_id", "")
+    profile_picture = request.args.get("profile_picture", "default") # if default passed to endpoint then the default profile picture will be stored with the user
 
-    return render_template("register.html", name=name, email=email, google_id=google_id)
+    return render_template("register.html", name=name, email=email, google_id=google_id, profile_picture=profile_picture)
 
 
 @app.route('/login_with_email/<user_id>', methods=["GET"])

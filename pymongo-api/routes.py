@@ -3,10 +3,13 @@ from fastapi import APIRouter, Body, Request, Response, HTTPException, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from typing import List
+import base64
 
 from models import * 
 
 router = APIRouter()
+
+
 
 
 # add a new user to collection
@@ -22,6 +25,15 @@ def create_user(request: Request, user: User = Body(...)):
 
     if existing_user:
         raise HTTPException(status_code=400, detail="User with the given email or Google ID already exists.")
+
+    # if a user does not register with google their profile picture will be flagged as default, triggering the base64 conversion and assignment, if registered with google then the https images provided by google will be used
+    print(f"profile picture --> {user["profile_picture"]}")
+    if user["profile_picture"] == "default":
+        print("User using default profile picture")
+        with open("../static/images/default_profile_picture.jpg", "rb") as imageFile: # https://stackoverflow.com/questions/47668507/how-to-store-images-in-mongodb-through-pymongo
+            base64_str = base64.b64encode(imageFile.read())
+            user["profile_picture"] = base64_str
+        
 
     # insert the new user
     new_user = request.app.database["users"].insert_one(user)
@@ -55,7 +67,7 @@ def login(request: Request, loginDetails: LoginRequest = Body(...)):
 def find_user_by_email(email: str, request: Request):
     user = request.app.database["users"].find_one({"email": email})
     if user:
-        print("User does exist with email:{email}")
+        print(f"User does exist with email:{email}")
         return { "exists": "True", "id": user["_id"] }
     else:
         print("User does not exist")

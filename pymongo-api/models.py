@@ -11,6 +11,7 @@ class User(BaseModel):
     name: str = Field(...)
     email: str = Field(...)
     password: str = Field(...)
+    profile_picture: Optional[str] = Field(...)
     token: str = Field(...)
     login: str = Field(...)
     read_access: str = Field(...)
@@ -29,6 +30,7 @@ class User(BaseModel):
                 "name": "Luke",
                 "email": "luke@gmail.com",
                 "password": "wijpyf-pYjbu3-pesmep",
+                "profile_picture": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAAAAAAAD...",
                 "token": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjUxZDcxYzE3MjhjZTgyNDNiZmM5ZWU2NWFjYjhkMTI3NThjZmViOTgiLCJ0eXAiOiJKV1QifQ...",
                 "login": "0",
                 "read_access": "1",
@@ -39,8 +41,9 @@ class User(BaseModel):
 
 class UserUpdate(BaseModel):
     name: Optional[str]
-    password: Optional[str]
     email: Optional[str]
+    password: Optional[str]
+    profile_picture: Optional[str] = Field(...)
     login: Optional[int]
     read_access: Optional[int]
     write_access: Optional[int]
@@ -54,6 +57,7 @@ class UserUpdate(BaseModel):
                 "name": "Luke Hilliard",
                 "email": "luke@gmail.com",
                 "password": "wijpyf-pYjbu3-pesmep",
+                "profile_picture": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAAAAAAAD...",
                 "token": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjUxZDcxYzE3MjhjZTgyNDNiZmM5ZWU2NWFjYjhkMTI3NThjZmViOTgiLCJ0eXAiOiJKV1QifQ...",
                 "login": "1",
                 "read_access": "1",

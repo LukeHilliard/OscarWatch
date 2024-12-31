@@ -3,6 +3,8 @@
 Register
 {% endblock %}
 {% block body %}
+
+
 <a href="/logout" class="position-absolute" style="top: 10px; left: 10px; font-size: 5rem; padding: 10px;">
   <i class="fas fa-arrow-left text-info"></i>
 </a>
@@ -12,6 +14,8 @@ Register
     <div class="card text-black" style="border-radius: 25px;">
       <div class="card-body p-md-8">
         <div class="row justify-content-center">
+
+
           <!-- Form Section -->
           <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
             <div class="d-flex justify-content-center mb-3 pb-1">
@@ -24,6 +28,9 @@ Register
             <p class="text-center h1 fw-bold mb-5 mt-4">Sign up</p>
 
             <form class="mx-1 mx-md-4" id="register-form">
+            <!-- hidden google_id -->
+            <input type="hidden" id="google_id" name="google_id" value="{{ google_id if google_id else '' }}" />
+            
               <!-- Name Input -->
               <div class="form-group mb-4">
                 <label for="name" class="form-label">Your Name</label>
@@ -154,6 +161,8 @@ Register
       write_access: "1",
       is_admin: "0"
     };
+
+    console.log("user -> " + user)
 
     try {
       const response = await fetch('https://api.oscarwatch.online/api/', {
