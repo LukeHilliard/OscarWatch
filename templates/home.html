@@ -2,13 +2,102 @@
 {% block title %}
 Home - How is he?
 {% endblock %}
-{% block body %}
-<div id="home">
+<style>
+    /* Navbar spacing adjustments */
+    .navbar {
+        padding: 0.5rem 1rem;
+    }
+
+    /* Container layout styles */
+    .container {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
     
-    <a href="/logout" class="position-absolute" style="top: 10px; left: 10px; font-size: 5rem; padding: 10px;">
-        <i class="fas fa-arrow-left text-info"></i>
-    </a>
-    <h3>Home</h3>
-    <h4>{{ id }}</h4>
+    .row {
+        flex: 1;
+        display: flex;
+    }
+    
+    .col-lg-auto {
+        flex: 1;
+        border: 1px solid blue;
+    }
+    
+    .video-player {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; 
+    }
+</style>
+{% block body %}
+<nav class="navbar navbar-expand-sm navbar-light bg-light">
+    <div class="container-fluid">
+        <!-- Logo -->
+        <span class="navbar-brand" href="#">
+            <img src="../static/images/oscarwatch_logo.png" width="30" height="30" class="d-inline-block align-top" alt=""/>
+            OscarWatch
+        </span>
+
+        <!-- Dropdown for User Avatar -->
+        <div class="dropdown ms-auto">
+            <a class="d-flex align-items-center text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
+                <img src="" id="profile-picture" class="rounded-circle me-2" alt="User Avatar" style="width: 40px; height: 40px;">
+                <span id="username-placeholder"></span>
+            </a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                    <li><a class="dropdown-item" href="#">Profile</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="/logout">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+</nav>    
+
+<div class="container" style="border:1px solid black;">
+    <div class="row">
+        <!-- Side Controls -->
+        <div class="col col-lg-3" style="border:1px solid red;">
+            side controls
+        </div>
+
+        <!-- Video Section -->
+        <div class="col-lg-auto" style="border:1px solid blue; flex: 1;">
+            <video class="video-player" controls>
+                <source src="{{ url_for('static', filename='oscarwatch_test.mp4') }}">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+    </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const id = "{{ id }}"; 
+        user = getName(id); 
+        console.log(user)
+    });
+
+    async function getName(id) {
+        console.log("Getting name for id " + id);
+        try {
+            const response = await fetch(`https://api.oscarwatch.online/api/${id}`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const data = await response.json();
+            document.getElementById("username-placeholder").innerHTML += data.name
+            console.log("response: ", data);
+            
+        } catch (e) {
+            alert(`Failed to fetch name for ID: ${id}`);
+            console.error("Fetch Error: ", e);
+        }
+    }
+    
+</script>
 {% endblock %}
+

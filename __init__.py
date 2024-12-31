@@ -57,10 +57,11 @@ def callback():
     id_info = id_token.verify_oauth2_token(
         id_token=credentials._id_token, request=token_request, audience=GOOGLE_CLIENT_ID
     )
+    print(f"all info from user ---> \n{id_info}\n")
     session["google_id"] = id_info.get("sub")
     session["email"] = id_info.get("email")
     session["name"] = id_info.get("name")
-    print("FLASK_SERVER: /login_with_google successful, checking if google_id is stored in 'users' collection")
+    print("FLASK_SERVER: /login_with_google successful, checking if email is stored in 'users' collection")
     print(f"google_id = {session["google_id"]}")
     print(f"email = {session["email"]}")
     print(f"name = {session["name"]}")
@@ -149,4 +150,4 @@ def logout():
     return redirect("/")
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
