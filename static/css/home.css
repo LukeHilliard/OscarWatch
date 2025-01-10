@@ -50,9 +50,15 @@ body.no-scroll {
 
 
 /* ------------     end of dropdown       ------------*/
+
+.video-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
 .content-row {
     display: flex;
-    flex: 1;
     background-color: #f8f9fa;
 }
 
@@ -66,6 +72,7 @@ body.no-scroll {
 }
 .control {
     height: 200px;
+    padding: 25px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -77,7 +84,6 @@ body.no-scroll {
 }
 
 .video-container {
-    height: 100%;
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -87,6 +93,83 @@ body.no-scroll {
 
 
 .video-player {
-    max-width: 80%; 
-    max-height: 80%;
+    max-width: 90%; 
+    max-height: 90%;
+}
+
+
+/* Media query for mobile phones */
+@media screen and (max-width: 768px) {
+    .navbar {
+        height: auto;
+        padding: 10px;
+    }
+
+    .navbar-brand {
+        flex-direction: column; 
+        align-items: flex-start;
+    }
+
+    .navbar-brand img {
+        max-width: 30%;
+    }
+
+    .brand-name {
+        font-size: 16px;
+    }
+
+    .navbar #username-placeholder {
+        font-size: 16px; 
+    }
+
+    .dropdown #username-placeholder {
+        font-size: 18px;
+    }
+
+    .dropdown-menu {
+        font-size: 18px;
+    }
+
+    .dropdown-menu .dropdown-item {
+        width: 100%;
+    }
+
+    .content-row {
+        max-height: 100%;
+        display: flex;
+        flex-direction: column; 
+    }
+
+    .side-controls {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        max-width: 100%;
+        width: auto;
+        justify-content: center;
+        max-height: 500px;
+    }
+
+    .control {
+        height: auto;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .control img {
+        width: 80%;
+    }
+
+    .video-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .video-player {
+        max-width: 100%;
+        max-height: 100%;
+    }
 }
