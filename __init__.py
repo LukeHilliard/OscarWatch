@@ -10,6 +10,9 @@ from google_auth_oauthlib.flow import Flow
 from pip._vendor import cachecontrol
 import google.auth.transport.requests
 
+import boto3
+
+
 load_dotenv(override=True)
 
 
@@ -120,11 +123,6 @@ def index():
      #   return redirect('home.html')
     return render_template("index.html")
 
-@app.route("/login")
-def login():
-    return render_template("login.html")
-
-
 @app.route("/register")
 def register():
     name = request.args.get("name", "")
@@ -133,6 +131,10 @@ def register():
     profile_picture = request.args.get("profile_picture", "default") # if default passed to endpoint then the default profile picture will be stored with the user
 
     return render_template("register.html", name=name, email=email, google_id=google_id, profile_picture=profile_picture)
+
+@app.route("/login")
+def login():
+    return render_template("login.html")
 
 
 @app.route('/login_with_email/<user_id>', methods=["GET"])
@@ -143,9 +145,6 @@ def login_with_email(user_id):
     return redirect("/home")
 
 
-@app.route("/home")
-def home():
-    return render_template('home.html', id=session["id"])
 
 @app.route("/logout", methods=["GET"])
 def logout():
@@ -165,6 +164,41 @@ def logout():
                 print(f"FLASK SERVER: ** FAILED ** LOGGING OUT USER {id}")
     except Exception as e:
         print(f"Error logging out: {e}")
+
+
+# connects with boto3 to create clients giving me access to AWS Kinesis, i get the HLS URL for the live stream and pass it back to the
+# front end to display, this will get called every 4-5 minutes as the HLS URL provided by AWS has a ttl of this time
+def get_hls_url():
+    kinesis_client = boto3.client(
+    'kinesisvideo',
+    aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID"),
+    aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
+    region_name=os.getenv("AWS_REGION")
+)
+
+    endpoint = kinesis_client.get_data_endpoint(
+         StreamName = "OscarWatch_CAM01",
+         APIName = "GET_HLS_STREAMING_SESSION_URL"
+    )["DataEndpoint"]
+
+    kv_access_manager = boto3.client("kinesis-video-archived-media", endpoint_url=endpoint, region_name="eu-west-1")
+
+    response = kv_access_manager.get_hls_streaming_session_url(
+        StreamName = "OscarWatch_CAM01",
+        PlaybackMode="LIVE"
+    )
+    url = response["HLSStreamingSessionURL"]
+    url = url.strip()
+    return url
+
+
+@app.route("/home")
+def home():
+    hls_url = get_hls_url()
+    
+    print("Generated HLS URL:", hls_url)
+    return render_template('home.html', id=session["id"], hls_url=hls_url)
+
 
 if __name__ == "__main__":
     app.run(debug=True)

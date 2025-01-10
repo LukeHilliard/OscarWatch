@@ -19,12 +19,14 @@
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/stylesheet.css') }}">
 
-
+    
     <title>{%block title%}{% endblock %}</title>
 </head>
 <body>
     {%block body%}{% endblock %}
     <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+    <!-- HLS support for streaming live video -->
+    <script src="https://unpkg.com/hls.js@latest"></script>
 
     
 </body>
