@@ -64,10 +64,11 @@ Home - How is he?
             side controls
         </div>
 
+
         <!-- Video Section -->
         <div class="col-lg-auto" style="border:1px solid blue; flex: 1;">
-            <video class="video-player" controls>
-                <source src="{{ url_for('static', filename='oscarwatch_test.mp4') }}">
+            <video id="video-player" class="video-player" controls autoplay muted>
+                <source src="" type="application/x-mpegURL">
                 Your browser does not support the video tag.
             </video>
         </div>
@@ -75,11 +76,38 @@ Home - How is he?
 </div>
 
 <script>
+
+    // when the page loads the users name and profile picture are fetched from the FastAPI to display, the initial HLS URL is called here also
     document.addEventListener("DOMContentLoaded", async function() {
         const id = "{{ id }}"; 
-        user = getUserDetails(id); 
+        user = getUserDetails(id)
         console.log(user)
-    });
+    
+        const video = document.getElementById("video-player");
+        const source = video.querySelector("source");
+
+        const hlsUrl = "{{ hls_url }}"
+
+        // Use hls.js if the browser doesn't support HLS natively
+        if (Hls.isSupported()) {
+            const hls = new Hls();
+            hls.loadSource(hlsUrl);
+            hls.attachMedia(video);
+            hls.on(Hls.Events.MANIFEST_PARSED, function () {
+                video.play();
+            });
+        } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+            // For Safari and other HLS-native browsers
+            video.src = hlsUrl;
+            video.load();
+            video.play();
+        } else {
+            console.error("HLS is not supported in this browser.");
+            alert("Your browser does not support HLS playback.");
+        }
+    })
+
+    
 
     async function getUserDetails(id) {
         console.log("Getting name for id " + id);
@@ -94,8 +122,8 @@ Home - How is he?
             console.log("response: ", data);
             
         } catch (e) {
-            alert(`Failed to fetch name for ID: ${id}`);
-            console.error("Fetch Error: ", e);
+            alert(`Failed to fetch name for ID: ${id}`)
+            console.error("Fetch Error: ", e)
         }
     }
     
