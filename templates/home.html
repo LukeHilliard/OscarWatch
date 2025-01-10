@@ -2,14 +2,16 @@
 {% block title %}
 Home - How is he?
 {% endblock %}
+{% block body_class %}
+no-scroll
+{% endblock%}
 
 {% block body %}
-<nav class="navbar navbar-expand-sm navbar-light bg-light">
-    <div class="container-fluid">
+<nav class="navbar navbar-expand-sm">
         <!-- Logo -->
         <span class="navbar-brand" href="#">
-            <img src="../static/images/oscarwatch_logo.png" width="30" height="30" class="d-inline-block align-top" alt=""/>
-            OscarWatch
+            <img src="../static/images/oscarwatch_logo.png" class="d-inline-block align-top" alt=""/>
+            <span class="brand-name">OscarWatch</span>
         </span>
 
         <!-- Dropdown for User Avatar -->
@@ -20,25 +22,38 @@ Home - How is he?
             </a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                 <li><a class="dropdown-item" href="#">Profile</a></li>
+                <li><a class="dropdown-item" href="#">Your Gallery</a></li>
                 <li><hr class="dropdown-divider"></li>
                 <li><a class="dropdown-item" href="/logout">Logout</a></li>
             </ul>
         </div>
-    </div>
 </nav>    
 
 <div class="video-container">
+
     <!-- Content Row -->
     <div class="content-row">
         <!-- Side Controls -->
         <div class="side-controls">
-            <h5>Side Controls</h5>
-            <p>Control 1</p>
-            <p>Control 2</p>
-            <p>Control 3</p>
-            <p>Control 4</p>
-            <p>Control 5</p>
-            <p>Control 6</p>
+            <!-- Buzzer -->
+            <div class="control">
+                <img src="{{ url_for('static', filename='images/controls/buzzer.svg')}}" alt="Buzzer icon"/>
+            </div>
+
+            <!-- Send voice -->
+            <div class="control">
+                <img src="{{ url_for('static', filename='images/controls/audio.svg')}}" alt="Microphone icon"/>
+            </div>
+
+            <!-- Take screenshot -->
+            <div class="control">
+                <img src="{{ url_for('static', filename='images/controls/image.svg')}}" alt="Screenshot icon"/>
+            </div>
+
+            <!-- Take video clip -->
+            <div class="control">
+                <img src="{{ url_for('static', filename='images/controls/video.svg')}}" alt="Video icon"/>
+            </div>
         </div>
 
         <!-- Video Section -->

@@ -1,35 +1,83 @@
-html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    overflow: hidden; /* Prevent scrolling */
+
+/*
+    In the base.html I have added some jinji code for the body tags class, in the home.html
+    I had a no-scroll class using jinji to remove the scrolling on this page only 
+ */
+body.no-scroll {
+    overflow: hidden;
 }
 
-.video-container {
+/* ------------     navbar      ------------*/
+.navbar {
+    height: 130px;
+    background-color: rgb(211, 238, 247);
+    padding: 20px;
+}
+
+.navbar-brand {
     display: flex;
-    flex-direction: column;
-    height: 100%;
+    align-items: center;
+    justify-content: space-around;
+    flex-direction: row;
+}
+.navbar-brand img {
+    width: 30%;
 }
 
-/* Row layout for side controls and video player */
+.brand-name {
+    font-size: 32px;
+}
+
+.navbar #username-placeholder{
+    font-size: 24px;
+}
+
+/* ------------     end of navbar       ------------*/
+
+/* ------------ profile dropdown ------------*/
+.dropdown #username-placeholder {
+    color: black;
+    font-size: 32px;
+}
+
+.dropdown-menu {
+    font-size: 24px;
+}
+
+.dropdown-menu .dropdown-item {
+    width: 200px;
+}
+
+
+/* ------------     end of dropdown       ------------*/
 .content-row {
-    flex: 1;
     display: flex;
-    overflow: hidden; /* Prevent scrolling within the row */
+    flex: 1;
+    background-color: #f8f9fa;
 }
 
-/* Side controls styling */
+
 .side-controls {
-    max-width: 300px;
-    width: 300px;
+    max-width: 250px;
+    width: 250px;
     display:flex;
     flex-direction: column;
-    background-color: #f8f9fa;
-    overflow-y: auto; /* Allow scrolling if content exceeds height */
+    
+}
+.control {
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
-/* Video player container */
+.control img {
+    width:75%;
+}
+
 .video-container {
+    height: 100%;
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -37,8 +85,8 @@ html, body {
 
 }
 
-/* Video player styling */
+
 .video-player {
-    max-width: 90%; /* Ensure it doesn't exceed container bounds */
-    max-height: 90%; /* Ensure it doesn't exceed container bounds */
+    max-width: 80%; 
+    max-height: 80%;
 }
