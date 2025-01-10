@@ -1,0 +1,44 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden; /* Prevent scrolling */
+}
+
+.video-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* Row layout for side controls and video player */
+.content-row {
+    flex: 1;
+    display: flex;
+    overflow: hidden; /* Prevent scrolling within the row */
+}
+
+/* Side controls styling */
+.side-controls {
+    max-width: 300px;
+    width: 300px;
+    display:flex;
+    flex-direction: column;
+    background-color: #f8f9fa;
+    overflow-y: auto; /* Allow scrolling if content exceeds height */
+}
+
+/* Video player container */
+.video-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: nowrap;
+
+}
+
+/* Video player styling */
+.video-player {
+    max-width: 90%; /* Ensure it doesn't exceed container bounds */
+    max-height: 90%; /* Ensure it doesn't exceed container bounds */
+}

@@ -2,35 +2,7 @@
 {% block title %}
 Home - How is he?
 {% endblock %}
-<style>
-    /* Navbar spacing adjustments */
-    .navbar {
-        padding: 0.5rem 1rem;
-    }
 
-    /* Container layout styles */
-    .container {
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-    }
-    
-    .row {
-        flex: 1;
-        display: flex;
-    }
-    
-    .col-lg-auto {
-        flex: 1;
-        border: 1px solid blue;
-    }
-    
-    .video-player {
-        width: 100%;
-        height: 100%;
-        object-fit: cover; 
-    }
-</style>
 {% block body %}
 <nav class="navbar navbar-expand-sm navbar-light bg-light">
     <div class="container-fluid">
@@ -46,27 +18,31 @@ Home - How is he?
                 <img src="" id="profile-picture" class="rounded-circle me-2" alt="User Avatar" style="width: 40px; height: 40px;">
                 <span id="username-placeholder"></span>
             </a>
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                    <li><a class="dropdown-item" href="#">Profile</a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="/logout">Logout</a></li>
-                </ul>
-            </div>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                <li><a class="dropdown-item" href="#">Profile</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="/logout">Logout</a></li>
+            </ul>
         </div>
-        
     </div>
 </nav>    
 
-<div class="container" style="border:1px solid black;">
-    <div class="row">
+<div class="video-container">
+    <!-- Content Row -->
+    <div class="content-row">
         <!-- Side Controls -->
-        <div class="col col-lg-3" style="border:1px solid red;">
-            side controls
+        <div class="side-controls">
+            <h5>Side Controls</h5>
+            <p>Control 1</p>
+            <p>Control 2</p>
+            <p>Control 3</p>
+            <p>Control 4</p>
+            <p>Control 5</p>
+            <p>Control 6</p>
         </div>
 
-
         <!-- Video Section -->
-        <div class="col-lg-auto" style="border:1px solid blue; flex: 1;">
+        <div class="video-container">
             <video id="video-player" class="video-player" controls autoplay muted>
                 <source src="" type="application/x-mpegURL">
                 Your browser does not support the video tag.
@@ -74,6 +50,7 @@ Home - How is he?
         </div>
     </div>
 </div>
+
 
 <script>
 
