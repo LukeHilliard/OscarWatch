@@ -1,4 +1,5 @@
-from gpiozero import Buzzer, LED
+from gpiozero import LED, Buzzer
+from gpiozero.pins.rpigpio import RPiGPIOFactory
 
 import time
 from pubnub.pnconfiguration import PNConfiguration
@@ -7,9 +8,10 @@ from dotenv import load_dotenv
 import os
 import json
 
-bz = Buzzer(3)
-indicator_led = LED(4)
-flashing_led = LED(14)
+factory = RPiGPIOFactory()
+bz = Buzzer(2, pin_factory=factory)
+indicator_led = LED(4, pin_factory=factory)
+flashing_led = LED(14, pin_factory=factory)
 
 
 load_dotenv(override=True)

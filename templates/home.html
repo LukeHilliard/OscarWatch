@@ -7,6 +7,10 @@ no-scroll
 {% endblock%}
 
 {% block body %}
+
+<!-- load audio recorder script, this will ask for microphone permissions -->
+<script src="{{ url_for('static', filename='js/audio-recorder.js') }}"></script>
+
 <nav class="navbar navbar-expand-sm">
         <!-- Logo -->
         <span class="navbar-brand" href="#">
@@ -30,20 +34,19 @@ no-scroll
 </nav>    
 
 <div class="video-container">
-
     <!-- Content Row -->
     <div class="content-row">
         <!-- Side Controls -->
         <div class="side-controls">
             <!-- Buzzer -->
             <div class="control" onclick="handleBuzzerClicked()">
-                <img src="{{ url_for('static', filename='images/controls/buzzer.svg')}}" alt="Buzzer icon"/>
+                <img src="{{ url_for('static', filename='images/controls/buzzer.svg')}}" alt="Buzzer icon"/></button>
                 <p>Buzz him</p>
             </div>
 
             <!-- Send voice -->
             <div class="control">
-                <img src="{{ url_for('static', filename='images/controls/audio.svg')}}" alt="Microphone icon"/>
+                <img data-bs-toggle="modal" data-bs-target="#exampleModal" src="{{ url_for('static', filename='images/controls/audio.svg')}}" alt="Microphone icon"/>
                 <p>Speak to him</p>
             </div>
 
@@ -69,6 +72,43 @@ no-scroll
         </div>
     </div>
 </div>
+
+
+  <!-- modal taken from: https://getbootstrap.com/docs/4.0/components/modal/ -->
+  <!-- audio recorder taken from: https://developer.mozilla.org/en-US/docs/Web/API/MediaStream_Recording_API/Using_the_MediaStream_Recording_API-->
+  <!-- Modal Structure -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Send Oscar a message!</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div class="left">
+                <div id="startButton" class="button">Start Recording</div>
+                <h2>Preview</h2>
+                <video id="preview" width="160" height="120" autoplay muted></video>
+              </div>
+              
+              <div class="right">
+                <div id="stopButton" class="button">Stop Recording</div>
+                <h2>Recording</h2>
+                <video id="recording" width="160" height="120" controls></video>
+                <a id="downloadButton" class="button">Download</a>
+              </div>
+              
+              <div class="bottom">
+                <pre id="log"></pre>
+              </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
 
 <script>
