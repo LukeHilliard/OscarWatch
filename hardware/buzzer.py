@@ -1,4 +1,4 @@
-from gpiozero import Buzzer
+from gpiozero import Buzzer, LED
 
 import time
 from pubnub.pnconfiguration import PNConfiguration
@@ -8,6 +8,8 @@ import os
 import json
 
 bz = Buzzer(3)
+indicator_led = LED(4)
+flashing_led = LED(14)
 
 
 load_dotenv(override=True)
@@ -40,15 +42,21 @@ def handle_message(message):
     msg = json.loads(json.dumps(message.message))
     if 'message' in msg:
         result = msg['message']['buzzer-on']
-        print(result)
+        print(f"From PubNub: {result}")
         if result == 'True':
-            print("buzzing")
+            print("Buzzing 3 times & and flashing LED")
+            indicator_led.on()
             # TODO when the buzzer is activated i want an led to blink indicating its on as there is no audio
             for i in range(3):
+                print(i + 1)
                 bz.on()
+                flashing_led.on()
                 time.sleep(0.5)
                 bz.off()
+                flashing_led.off()
                 time.sleep(1)
+            indicator_led.off()
+            print("Finished buzzing")
 
 
 
