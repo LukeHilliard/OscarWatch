@@ -22,15 +22,24 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
-    
-    <title>{%block title%}{% endblock %}</title>
-</head>
-<body class="{% block body_class %}{% endblock %}">
-    {%block body%}{% endblock %}
+
     <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+    <!-- PubNub SDK -->
+    <script src="https://cdn.pubnub.com/sdk/javascript/pubnub.8.2.8.js"></script>
+
     <!-- HLS support for streaming live video -->
     <script src="https://unpkg.com/hls.js@latest"></script>
 
+    <title>{%block title%}{% endblock %}</title>
+</head>
+<body onload="keepAlive(); time(), setupPubnub();" class="{% block body_class %}{% endblock %}">
+    {%block body%}{% endblock %}
+    
+
     
 </body>
+
+
 </html>

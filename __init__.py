@@ -1,9 +1,10 @@
 import os
+import time
 import json
 import pathlib
 import requests
 from dotenv import load_dotenv
-from flask import Flask, render_template, redirect, request, abort, session, url_for
+from flask import Flask, render_template, redirect, request, abort, session, url_for, jsonify
 
 from google.oauth2 import id_token
 from google_auth_oauthlib.flow import Flow
@@ -15,6 +16,8 @@ import boto3
 
 load_dotenv(override=True)
 
+alive = 0
+data = {}
 
 app = Flask(__name__)
 app.secret_key = os.getenv("APP_SECRET_KEY")
@@ -123,6 +126,16 @@ def index():
      #   return redirect('home.html')
     return render_template("index.html")
 
+@app.route("/keep_alive")
+def keep_alive():
+    global alive, data
+    alive += 1
+    keep_alive_count = str(alive)
+    data["keep_alive"] = keep_alive_count
+    parsed_json = json.dumps(data)
+    print(parsed_json)
+    return str(parsed_json)
+
 @app.route("/register")
 def register():
     name = request.args.get("name", "")
@@ -194,11 +207,25 @@ def get_hls_url():
 
 @app.route("/home")
 def home():
+    # get a new hls url every time the route is called
     hls_url = get_hls_url()
     
+    #TODO setup automatic calling everything 3 mins as the ttl of the url is 3 mins, video pauses once it dies
+
     print("Generated HLS URL:", hls_url)
     return render_template('home.html', id=session["id"], hls_url=hls_url)
 
 
+
+# --------- PubNub ---------
+
+# this route returns the publish and subscribe keys to a function in my main.js. This allows me to hide my publish and subscribe keys in this file
+@app.route("/get_pubnub_keys", methods=["GET"])
+def get_pubnub_keys():
+    return jsonify({
+        "publishKey": os.getenv("PUBNUB_PUBLISH_KEY"),
+        "subscribeKey": os.getenv("PUBNUB_SUBSCRIBE_KEY")
+    })
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="192.168.1.150", port="5000", debug=True)
