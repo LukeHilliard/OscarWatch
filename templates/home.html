@@ -36,23 +36,27 @@ no-scroll
         <!-- Side Controls -->
         <div class="side-controls">
             <!-- Buzzer -->
-            <div class="control">
+            <div class="control" onclick="handleBuzzerClicked()">
                 <img src="{{ url_for('static', filename='images/controls/buzzer.svg')}}" alt="Buzzer icon"/>
+                <p>Buzz him</p>
             </div>
 
             <!-- Send voice -->
             <div class="control">
                 <img src="{{ url_for('static', filename='images/controls/audio.svg')}}" alt="Microphone icon"/>
+                <p>Speak to him</p>
             </div>
 
             <!-- Take screenshot -->
             <div class="control">
                 <img src="{{ url_for('static', filename='images/controls/image.svg')}}" alt="Screenshot icon"/>
+                <p>Screenshot</p>
             </div>
 
             <!-- Take video clip -->
             <div class="control">
                 <img src="{{ url_for('static', filename='images/controls/video.svg')}}" alt="Video icon"/>
+                <p>Clip last 30 seconds</p>
             </div>
         </div>
 
