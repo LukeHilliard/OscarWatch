@@ -1,3 +1,5 @@
+# followed from: https://learn.adafruit.com/dht-humidity-sensing-on-raspberry-pi-with-gdocs-logging/python-setup?utm_source=chatgpt.com
+
 import time
 import board
 import adafruit_dht
