@@ -82,6 +82,40 @@ def update_user(id: str, request: Request, user: UserUpdate = Body(...)):
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User with {id} not found")
 
 
+# Upload a users screenshot
+#
+@router.post("/screenshot/{id}", response_description="Append screenshots to user's list")
+async def add_images(id: str, request: Request, image_request: ImageUploadRequest):
+
+    user = request.app.database["users"].find_one({"_id": id})
+    if not user:
+        raise HTTPException(status_code=404, detail=f"User with ID {id} not found")
+    
+    #print(f"user found: {user}")
+
+    # append images to the user's screenshots
+    result = request.app.database["users"].update_one(
+        {"_id": id},
+        {"$push": {"screenshots": {"$each": image_request.images}}}
+    )
+
+    if result.modified_count == 1:
+        return {"message": "Screenshots appended successfully", "user_id": id, "images_appended": len(image_request.images)}
+    else:
+        raise HTTPException(status_code=500, detail="Failed to append screenshots")
+    
+
+# Get a users screenshots
+#
+@router.get("/all_screenshots/{id}", response_description="Return a list of a users screenshots")
+async def get_all_images(id: str, request: Request):
+    user = request.app.database["users"].find_one({"_id": id})
+    if not user:
+        raise HTTPException(status_code=404, detail=f"User with ID {id} not found")
+    
+    return {"screenshots": user.get("screenshots", [])}
+    
+
 
 # Delete a user by _id
 #

@@ -81,10 +81,10 @@ function handleAudioRecordingStopped() {
 
 function handleMessage(message)
 {
+    console.log(message)
     if(message.data)
     {
         document.getElementById("temperature_c").innerHTML = message.data.temperature_c
-        document.getElementById("temperature_f").innerHTML = message.data.temperature_f
         document.getElementById("humidity").innerHTML = message.data.humidity
     }
 }
@@ -99,3 +99,40 @@ const publishMessage = async(message) => {
     await pubnub.publish(publishPayload)
 }
 
+
+function handleScreenshotClicked() {
+    const video = document.getElementById("video-player")
+    const canvas = document.createElement("canvas")
+
+    canvas.width = video.videoWidth
+    canvas.height = video.videoHeight
+
+    const ctx = canvas.getContext("2d")
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
+
+    const base64Image = canvas.toDataURL("image/png")
+    console.log(base64Image)
+    uploadScreenshot(base64Image)
+}
+
+async function uploadScreenshot(base64Image) {
+    console.log("Uploading image...");
+    const userId = document.getElementById("user_id").value;
+    console.log(`userID: ${userId}`)
+
+    const response = await fetch(`https://api.oscarwatch.online/api/screenshot/${userId}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ images: [base64Image] }),
+        mode: "cors",
+    });
+
+    if (response.ok) {
+        console.log("Screenshot appended successfully");
+    } else {
+        const errorData = await response.json();
+        console.error("Failed to append screenshot:", errorData.detail);
+    }
+}
