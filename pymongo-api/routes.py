@@ -30,10 +30,8 @@ def create_user(request: Request, user: User = Body(...)):
     # if a user does not register with google their profile picture will be flagged as default, triggering the base64 conversion and assignment, if registered with google then the https images provided by google will be used
     print(f"profile picture --> {user["profile_picture"]}")
     if user["profile_picture"] == "default":
-        print("User using default profile picture")
-        with open("../static/images/default_profile_picture.jpg", "rb") as imageFile: # https://stackoverflow.com/questions/47668507/how-to-store-images-in-mongodb-through-pymongo
-            base64_str = base64.b64encode(imageFile.read())
-            user["profile_picture"] = base64_str
+        user["profile_picture"] = "../static/images/default_profile_picture.png"
+
         
 
     # insert the new user

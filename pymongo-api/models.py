@@ -11,14 +11,14 @@ class User(BaseModel):
     name: str = Field(...)
     email: str = Field(...)
     password: str = Field(...)
-    profile_picture: Optional[str] = Field(...)
+    profile_picture: Optional[str] = Field(None)
     screenshots: Optional[list[str]] = Field(default_factory=list)
     token: str = Field(...)
     login: str = Field(...)
     read_access: str = Field(...)
     write_access: str = Field(...)
     is_admin: str = Field(...)
-    data_joined: str=Field(...)
+    date_joined: str=Field(...)
 
     class Config: 
         populate_by_name = True
@@ -34,8 +34,8 @@ class User(BaseModel):
                 "password": "wijpyf-pYjbu3-pesmep",
                 "profile_picture": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAAAAAAAD...",
                 "screenshots": [
-                    "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAAAAAAAD...",
-                    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA..."
+                    "date:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAAAAAAAD...",
+                    "date:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA..."
                 ],
                 "token": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjUxZDcxYzE3MjhjZTgyNDNiZmM5ZWU2NWFjYjhkMTI3NThjZmViOTgiLCJ0eXAiOiJKV1QifQ...",
                 "login": "0",

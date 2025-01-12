@@ -13,14 +13,14 @@ no-scroll
 <nav class="navbar navbar-expand-sm">
         <!-- Logo -->
         <span class="navbar-brand" href="#">
-            <img src="../static/images/oscarwatch_logo.png" class="d-inline-block align-top" alt=""/>
+            <img src="../static/images/oscarwatch_logo.png" id="profile-picture" class="d-inline-block align-top" alt=""/>
             <span class="brand-name">OscarWatch</span>
         </span>
 
         <!-- Dropdown for User Avatar -->
         <div class="dropdown ms-auto">
             <a class="d-flex align-items-center text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
-                <img src="" id="profile-picture" class="rounded-circle me-2" alt="User Avatar" style="width: 40px; height: 40px;">
+                <img src="{{ profile }}" id="profile-picture" class="rounded-circle me-2" alt="User Avatar" >
                 <span id="username-placeholder"></span>
             </a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
@@ -31,7 +31,7 @@ no-scroll
             </ul>
         </div>
 </nav>    
-<input id="user_id" value="{{ id }}" type="hidden"></span>
+
 <canvas id="screenshot-canvas" style="display: none;"></canvas>
 <div class="video-container">
     <!-- Content Row -->
@@ -109,20 +109,14 @@ no-scroll
     </div>
   </div>
 
-<!-- load audio recorder script, this will ask for microphone permissions -->
 
 <script>
 
     // when the page loads the users name and profile picture are fetched from the FastAPI to display, the initial HLS URL is called here also
-    document.addEventListener("DOMContentLoaded", async function() {
-        const id = "{{ id }}"; 
-        document.getElementById("user_id").innerHTML = id
-        user = getUserDetails(id)
-        console.log(user)
-    
+    document.addEventListener("DOMContentLoaded", async function() {   
+
         const video = document.getElementById("video-player");
         const source = video.querySelector("source");
-
         const hlsUrl = "{{ hls_url }}"
 
         // Use hls.js if the browser doesn't support HLS natively
@@ -143,24 +137,6 @@ no-scroll
             alert("Your browser does not support HLS playback.");
         }
     })
-
-    async function getUserDetails(id) {
-        console.log("Getting name for id " + id);
-        try {
-            const response = await fetch(`https://api.oscarwatch.online/api/${id}`);
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            const data = await response.json();
-            document.getElementById("username-placeholder").innerHTML = data.name
-            document.getElementById("profile-picture").src = data.profile_picture
-            console.log("response: ", data);
-            
-        } catch (e) {
-            alert(`Failed to fetch name for ID: ${id}`)
-            console.error("Fetch Error: ", e)
-        }
-    }
     
 </script>
 {% endblock %}
