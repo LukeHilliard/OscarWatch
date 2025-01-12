@@ -103,7 +103,7 @@ async def add_images(id: str, request: Request, image_request: ImageUploadReques
         raise HTTPException(status_code=500, detail="Failed to append screenshots")
     
 
-# Get a users screenshots
+# Get a list of users screenshots
 #
 @router.get("/all_screenshots/{id}", response_description="Return a list of a users screenshots")
 async def get_all_images(id: str, request: Request):
