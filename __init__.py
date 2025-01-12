@@ -6,6 +6,9 @@ import requests
 from dotenv import load_dotenv
 from flask import Flask, render_template, redirect, request, abort, session, url_for, jsonify
 
+# for file upload
+from werkzeug.utils import secure_filename
+
 from google.oauth2 import id_token
 from google_auth_oauthlib.flow import Flow
 from pip._vendor import cachecontrol
@@ -19,9 +22,21 @@ load_dotenv(override=True)
 alive = 0
 data = {}
 
+# setup for audio file upload
+UPLOAD_FOLDER = 'uploads'
+ALLOWED_EXTENSIONS = {'webm'}
+
+
 app = Flask(__name__)
 app.secret_key = os.getenv("APP_SECRET_KEY")
 
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16 MB limit
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+# check if the uploaded file extension is within the allowed extensions
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # --- Setup Google OAuth ---
 GOOGLE_CLIENT_ID = (os.getenv("GOOGLE_CLIENT_ID"))
@@ -227,5 +242,27 @@ def get_pubnub_keys():
         "subscribeKey": os.getenv("PUBNUB_SUBSCRIBE_KEY")
     })
 
+# ------------------------
+
+
+
+# uploading files with flask: https://flask.palletsprojects.com/en/stable/patterns/fileuploads/?utm_source=chatgpt.com
+@app.route('/upload', methods=['POST'])
+def upload_file():
+    if 'audio' not in request.files:
+        return jsonify({'error': 'No file part'}), 400
+
+    file = request.files['audio']
+
+    if file.filename == '':
+        return jsonify({'error': 'No selected file'}), 400
+
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(file_path)
+        return jsonify({'message': 'File uploaded successfully', 'file_path': file_path}), 200
+
+    return jsonify({'error': 'Invalid file type'}), 400
 if __name__ == "__main__":
     app.run(debug=True)

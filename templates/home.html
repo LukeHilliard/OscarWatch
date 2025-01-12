@@ -8,8 +8,7 @@ no-scroll
 
 {% block body %}
 
-<!-- load audio recorder script, this will ask for microphone permissions -->
-<script src="{{ url_for('static', filename='js/audio-recorder.js') }}"></script>
+
 
 <nav class="navbar navbar-expand-sm">
         <!-- Logo -->
@@ -85,22 +84,12 @@ no-scroll
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-            <div class="left">
-                <div id="startButton" class="button">Start Recording</div>
-                <h2>Preview</h2>
-                <video id="preview" width="160" height="120" autoplay muted></video>
-              </div>
-              
-              <div class="right">
-                <div id="stopButton" class="button">Stop Recording</div>
-                <h2>Recording</h2>
-                <video id="recording" width="160" height="120" controls></video>
-                <a id="downloadButton" class="button">Download</a>
-              </div>
-              
-              <div class="bottom">
-                <pre id="log"></pre>
-              </div>
+            <h1>Record Your Voice</h1>
+            <button onclick="handleAudioRecordingStarted()"id="start">Start Recording</button>
+            <button onclick="handleAudioRecordingStopped()" id="stop" disabled>Stop Recording</button>
+            <audio id="playback" controls></audio>
+            <script src="{{ url_for('static', filename='js/audio-recorder.js') }}"></script>
+
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -110,6 +99,7 @@ no-scroll
     </div>
   </div>
 
+<!-- load audio recorder script, this will ask for microphone permissions -->
 
 <script>
 
