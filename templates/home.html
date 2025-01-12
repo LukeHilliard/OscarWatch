@@ -31,7 +31,8 @@ no-scroll
             </ul>
         </div>
 </nav>    
-
+<input id="user_id" value="{{ id }}"></span>
+<canvas id="screenshot-canvas" style="display: none;"></canvas>
 <div class="video-container">
     <!-- Content Row -->
     <div class="content-row">
@@ -50,15 +51,15 @@ no-scroll
             </div>
 
             <!-- Take screenshot -->
-            <div class="control">
-                <img src="{{ url_for('static', filename='images/controls/image.svg')}}" alt="Screenshot icon"/>
+            <div class="control" onclick="handleScreenshotClicked()">
+                <img  src="{{ url_for('static', filename='images/controls/image.svg')}}" alt="Screenshot icon"/>
                 <p>Screenshot</p>
             </div>
 
             <!-- Take video clip -->
             <div class="control">
                 <img src="{{ url_for('static', filename='images/controls/video.svg')}}" alt="Video icon"/>
-                <p>Clip last 30 seconds</p>
+                <p>30 second clip</p>
             </div>
 
             
@@ -76,6 +77,8 @@ no-scroll
                 <p>Humidity: <span id="humidity">--</span> %</p>
             </div>
         </div>
+
+        <img id="screenshot-preview" class="screenshot" alt="Screenshot preview" style="display: none;"/>
     </div>
 </div>
 
@@ -113,6 +116,7 @@ no-scroll
     // when the page loads the users name and profile picture are fetched from the FastAPI to display, the initial HLS URL is called here also
     document.addEventListener("DOMContentLoaded", async function() {
         const id = "{{ id }}"; 
+        document.getElementById("user_id").innerHTML = id
         user = getUserDetails(id)
         console.log(user)
     

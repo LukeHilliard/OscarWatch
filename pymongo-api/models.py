@@ -2,7 +2,7 @@
 # Request Body: https://fastapi.tiangolo.com/tutorial/body/
 
 import uuid
-from typing import Optional
+from typing import Optional, List
 from pydantic import BaseModel, Field
 
 class User(BaseModel):
@@ -12,6 +12,7 @@ class User(BaseModel):
     email: str = Field(...)
     password: str = Field(...)
     profile_picture: Optional[str] = Field(...)
+    screenshots: Optional[list[str]] = Field(default_factory=list)
     token: str = Field(...)
     login: str = Field(...)
     read_access: str = Field(...)
@@ -31,6 +32,10 @@ class User(BaseModel):
                 "email": "luke@gmail.com",
                 "password": "wijpyf-pYjbu3-pesmep",
                 "profile_picture": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAAAAAAAD...",
+                "screenshots": [
+                    "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAAAAAAAD...",
+                    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA..."
+                ],
                 "token": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjUxZDcxYzE3MjhjZTgyNDNiZmM5ZWU2NWFjYjhkMTI3NThjZmViOTgiLCJ0eXAiOiJKV1QifQ...",
                 "login": "0",
                 "read_access": "1",
@@ -44,6 +49,7 @@ class UserUpdate(BaseModel):
     email: Optional[str]
     password: Optional[str]
     profile_picture: Optional[str] = Field(...)
+    screenshots: Optional[list[str]] = Field(default_factory=list)
     login: Optional[int]
     read_access: Optional[int]
     write_access: Optional[int]
@@ -58,6 +64,10 @@ class UserUpdate(BaseModel):
                 "email": "luke@gmail.com",
                 "password": "wijpyf-pYjbu3-pesmep",
                 "profile_picture": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAAAAAAAD...",
+                "screenshots": [
+                    "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAAAAAAAD...",
+                    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA..."
+                ],
                 "token": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjUxZDcxYzE3MjhjZTgyNDNiZmM5ZWU2NWFjYjhkMTI3NThjZmViOTgiLCJ0eXAiOiJKV1QifQ...",
                 "login": "1",
                 "read_access": "1",
@@ -72,3 +82,6 @@ class LoginRequest(BaseModel):
 
 class LogoutRequest(BaseModel):
     id: str
+
+class ImageUploadRequest(BaseModel):
+    images: List[str]
