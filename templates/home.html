@@ -60,6 +60,8 @@ no-scroll
                 <img src="{{ url_for('static', filename='images/controls/video.svg')}}" alt="Video icon"/>
                 <p>Clip last 30 seconds</p>
             </div>
+
+            
         </div>
 
         <!-- Video Section -->
@@ -68,6 +70,11 @@ no-scroll
                 <source src="" type="application/x-mpegURL">
                 Your browser does not support the video tag.
             </video>
+
+            <div class="sensor-data">
+                <p>Temperature: <span id="temperature_c">--</span> °C</p>
+                <p>Humidity: <span id="humidity">--</span> %</p>
+            </div>
         </div>
     </div>
 </div>
