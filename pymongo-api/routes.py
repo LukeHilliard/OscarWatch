@@ -5,6 +5,19 @@ from fastapi.responses import JSONResponse
 from typing import List
 import base64
 
+# hashing passwords with bcrypt - https://www.geeksforgeeks.org/password-hashing-with-bcrypt-in-flask/
+#                               - https://www.geeksforgeeks.org/hashing-passwords-in-python-with-bcrypt/
+import bcrypt
+# example password 
+password = 'password123'
+  
+# converting password to array of bytes 
+bytes = password.encode('utf-8') 
+  
+# generating the salt 
+salt = bcrypt.gensalt() 
+  
+
 from models import * 
 
 router = APIRouter()
@@ -31,6 +44,14 @@ def create_user(request: Request, user: User = Body(...)):
     print(f"profile picture --> {user["profile_picture"]}")
     if user["profile_picture"] == "default":
         user["profile_picture"] = "../static/images/default_profile_picture.png"
+
+
+    # hash password before storing
+    password_bytes = user['password'].encode('utf-8')
+
+    # hashing the password 
+    hash = bcrypt.hashpw(password_bytes, salt) 
+    user["password"] = hash
 
         
 
@@ -154,12 +175,16 @@ def find_user_by_email(email: str, request: Request):
 def login(request: Request, loginDetails: LoginRequest = Body(...)):
     email = loginDetails.email
     password = loginDetails.password
+    password_bytes = password.encode('utf-8')
+
+    
 
     user = request.app.database["users"].find_one({"email": email})
 
     # TODO add hash comparison logic here 
     if user: # matching email found
-        if user["password"] == password: # check passwords
+        if bcrypt.checkpw(password_bytes, user["password"]): # check passwords
+
             request.app.database["users"].update_one({"email": user["email"]}, {"$set": {"login": "1"}})
             return { "login": "True", "id": user["_id"]}
         else:
