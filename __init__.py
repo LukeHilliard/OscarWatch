@@ -255,12 +255,11 @@ def profile():
     try:
         response = requests.get(endpoint_url)
         data = response.json() 
-
+        print(f"DATA {data}")
     except Exception as e:
         print(f"Error: {e}")
 
-
-    return render_template("profile-page.html", id=session["id"], name=data["name"], email=data["email"], profile=data["profile_picture"], date_joined=data["date_joined"])
+    return render_template("profile-page.html", id=session["id"], name=data["name"], email=data["email"], profile=data["profile_picture"], date_joined=data["date_joined"], screenshots=data["screenshots"])
 
 
 
@@ -296,5 +295,6 @@ def upload_file():
         return jsonify({'message': 'File uploaded successfully', 'file_path': file_path}), 200
 
     return jsonify({'error': 'Invalid file type'}), 400
+
 if __name__ == "__main__":
     app.run(debug=True)
