@@ -13,7 +13,7 @@ def run_scripts(script_name):
     except subprocess.CalledProcessError as e:
         print(f"Error running {script_name}:  {e}")
 
-scripts = ["buzzer.py", "audio_led.py"]
+scripts = ["buzzer.py", "audio_led.py", "temperature_sensor.py"]
 
 
 # Create threads each calling the above function 
