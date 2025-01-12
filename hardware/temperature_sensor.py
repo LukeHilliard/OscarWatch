@@ -37,7 +37,7 @@ config.user_id = "ow-pi-temperature"
 pubnub = PubNub(config)
 pubnub.add_listener(Listener())
 
-app_channel = "ow-pi-temperature"
+app_channel = "ow-pi-channel"
 subscription = pubnub.channel(app_channel).subscription()
 subscription.subscribe()
 publish_result = pubnub.publish().channel(app_channel).message("Hello from CAM01(temperature)! If your seeing this then the buzzer has connected to PubNub.").sync()
@@ -52,9 +52,11 @@ while True:
         humidity = dhtDevice.humidity
 
         data = {
-            "temperature_c": temperature_c,
-            "temperature_f": temperature_f,
-            "humidity": humidity,
+            "data": {
+                "temperature_c": temperature_c,
+                "temperature_f": temperature_f,
+                "humidity": humidity,
+            }
         }
         print(data)
         pubnub.publish().channel(app_channel).message(data).sync()

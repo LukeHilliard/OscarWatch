@@ -79,12 +79,13 @@ function handleAudioRecordingStopped() {
 
 
 
-
 function handleMessage(message)
 {
-    if(message == '"buzzer-on":"True"')
+    if(message.data)
     {
-        // update css to show buzzer being triggered
+        document.getElementById("temperature_c").innerHTML = message.data.temperature_c
+        document.getElementById("temperature_f").innerHTML = message.data.temperature_f
+        document.getElementById("humidity").innerHTML = message.data.humidity
     }
 }
 
