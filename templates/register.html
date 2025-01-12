@@ -35,7 +35,6 @@ Register
             <input type="hidden" id="profile_picture" value="{{ profile_picture if google_id else 'default' }}"/>
               <!-- Name Input -->
               <div class="form-group mb-4">
-                <label for="name" class="form-label">Your Name</label>
                 <div class="input-group">
                   <span class="input-group-text bg-light text-secondary">
                     <i class="fas fa-user"></i>
@@ -53,7 +52,6 @@ Register
             
               <!-- Email Input -->
               <div class="form-group mb-4">
-                <label for="email" class="form-label">Your Email</label>
                 <div class="input-group">
                   <span class="input-group-text bg-light text-secondary">
                     <i class="fas fa-envelope"></i>
@@ -71,7 +69,6 @@ Register
             
               <!-- Password Input -->
               <div class="form-group mb-4">
-                <label for="password" class="form-label">Password</label>
                 <div class="input-group">
                   <span class="input-group-text bg-light text-secondary">
                     <i class="fas fa-lock"></i>
@@ -85,23 +82,7 @@ Register
                   />
                 </div>
               </div>
-            
-              <!-- Confirm Password Input -->
-              <div class="form-group mb-4">
-                <label for="confirm-password" class="form-label">Repeat Your Password</label>
-                <div class="input-group">
-                  <span class="input-group-text bg-light text-secondary">
-                    <i class="fas fa-key"></i>
-                  </span>
-                  <input
-                    type="password"
-                    id="confirm-password"
-                    class="form-control"
-                    required
-                    autocomplete="off"
-                  />
-                </div>
-              </div>
+          
             
               <!-- Submit Button -->
               <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
