@@ -81,7 +81,7 @@ function handleAudioRecordingStopped() {
 
 function handleMessage(message)
 {
-    console.log(message)
+    //console.log(message)
     if(message.data)
     {
         document.getElementById("temperature_c").innerHTML = message.data.temperature_c

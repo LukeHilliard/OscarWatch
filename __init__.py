@@ -229,6 +229,22 @@ def home():
     print("Generated HLS URL:", hls_url)
     return render_template('home.html', id=session["id"], hls_url=hls_url)
 
+@app.route("/profile")
+def profile():
+    endpoint_url = f"{api_url}/{session["id"]}"
+    user = []
+    # fetch user details from database to pass into profile page
+    try:
+        response = requests.get(endpoint_url)
+        data = response.json() 
+        print(data[""])
+
+    except Exception as e:
+        print(f"Error: {e}")
+
+
+    return render_template("profile-page.html", id=session["id"], name=data["name"], email=data["email"], profile=data["profile_picture"], date_joined=data["date_joined"])
+
 
 
 # --------- PubNub ---------

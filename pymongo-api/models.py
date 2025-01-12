@@ -18,6 +18,7 @@ class User(BaseModel):
     read_access: str = Field(...)
     write_access: str = Field(...)
     is_admin: str = Field(...)
+    data_joined: str=Field(...)
 
     class Config: 
         populate_by_name = True
@@ -41,6 +42,7 @@ class User(BaseModel):
                 "read_access": "1",
                 "write_access": "1",
                 "is_admin": "1",
+                "date_joined": "09/01/25"
             }
         }
 
@@ -73,6 +75,7 @@ class UserUpdate(BaseModel):
                 "read_access": "1",
                 "write_access": "0",
                 "is_admin": "0",
+                "date_joined": "09/01/25"
             }
         }
 

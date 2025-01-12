@@ -24,14 +24,14 @@ no-scroll
                 <span id="username-placeholder"></span>
             </a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                <li><a class="dropdown-item" href="#">Profile</a></li>
+                <li><a class="dropdown-item" href="/profile">Profile</a></li>
                 <li><a class="dropdown-item" href="#">Your Gallery</a></li>
                 <li><hr class="dropdown-divider"></li>
                 <li><a class="dropdown-item" href="/logout">Logout</a></li>
             </ul>
         </div>
 </nav>    
-<input id="user_id" value="{{ id }}"></span>
+<input id="user_id" value="{{ id }}" type="hidden"></span>
 <canvas id="screenshot-canvas" style="display: none;"></canvas>
 <div class="video-container">
     <!-- Content Row -->
@@ -144,8 +144,6 @@ no-scroll
         }
     })
 
-    
-
     async function getUserDetails(id) {
         console.log("Getting name for id " + id);
         try {
@@ -154,7 +152,7 @@ no-scroll
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
             const data = await response.json();
-            document.getElementById("username-placeholder").innerHTML += data.name
+            document.getElementById("username-placeholder").innerHTML = data.name
             document.getElementById("profile-picture").src = data.profile_picture
             console.log("response: ", data);
             
