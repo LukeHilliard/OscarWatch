@@ -134,7 +134,9 @@ Register
 
 <script>
 
-
+  
+  let date = new Date().toISOString().split('T')[0].toString()
+  console.log(date)
 
   document.getElementById('register-form').addEventListener('submit', async (event) => {
     event.preventDefault();
@@ -152,8 +154,9 @@ Register
       login: "0",
       read_access: "1",
       write_access: "1",
-      is_admin: "0"
-    };
+      is_admin: "0",
+      date_joined:  date// when registering a new user, get the current date to store date joined
+    }
 
     console.log("user pp-> {{ profile_picture }}")
 

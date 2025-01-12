@@ -20,6 +20,7 @@ import boto3
 load_dotenv(override=True)
 
 alive = 0
+active_users = 0
 data = {}
 
 # setup for audio file upload
@@ -63,11 +64,11 @@ def login_required(function):
 
 @app.route("/callback")
 def callback():
-    flow.fetch_token(authorization_response=request.url)
+    global active_users
 
+    flow.fetch_token(authorization_response=request.url)
     if not session.get("state") == request.args.get("state"):
         abort(500)  # States don't match
-
 
     credentials = flow.credentials
     request_session = requests.session()
@@ -101,6 +102,7 @@ def callback():
         if data["exists"] == "True": 
             print("User exists, redirecting to home")
             session["id"] = data["id"]
+            active_users+=1
             return redirect("/home")
         else:
             print("User does not exist, redirecting to register")
@@ -118,6 +120,7 @@ def login_with_google():
     authorization_url, state = flow.authorization_url()
     session["state"] = state
     print(f"STATE: {state}")
+    
     return redirect(authorization_url)
 
 @app.route("/register_with_google")
@@ -142,10 +145,11 @@ def index():
 
 @app.route("/keep_alive")
 def keep_alive():
-    global alive, data
+    global alive, data, active_users
     alive += 1
     keep_alive_count = str(alive)
     data["keep_alive"] = keep_alive_count
+    data["active_users"] = active_users
     parsed_json = json.dumps(data)
     print(parsed_json)
     return str(parsed_json)
@@ -161,13 +165,16 @@ def register():
 
 @app.route("/login")
 def login():
+    
     return render_template("login.html")
 
 
 @app.route('/login_with_email/<user_id>', methods=["GET"])
 def login_with_email(user_id):
+    global active_users
     session["id"] = user_id
     print(f"User logged in with ID: {user_id}")
+    active_users+=1
 
     return redirect("/home")
 
@@ -175,6 +182,7 @@ def login_with_email(user_id):
 
 @app.route("/logout", methods=["GET"])
 def logout():
+    global active_users
     try:
         print(f" \n\n\n\nTrying to logout with id-{session['id']}")
         response = requests.post(f"{api_url}/logout/{session['id']}")
@@ -186,6 +194,8 @@ def logout():
             if data["logout"] == "True":
                 print(f"FLASK SERVER: LOGGING OUT USER {id}")
                 session.clear()
+                if active_users > 0:
+                    active_users-=1
                 return redirect("/")
             else:
                 print(f"FLASK SERVER: ** FAILED ** LOGGING OUT USER {id}")
@@ -223,11 +233,34 @@ def get_hls_url():
 def home():
     # get a new hls url every time the route is called
     hls_url = get_hls_url()
+
+    # fetch user details from database to pass into profile page
+    endpoint_url = f"{api_url}/{session["id"]}"
+    try:
+        response = requests.get(endpoint_url)
+        data = response.json() 
+        print(f"HERE {data}")
+
+    except Exception as e:
+        print(f"Error: {e}")
     
     #TODO setup automatic calling everything 3 mins as the ttl of the url is 3 mins, video pauses once it dies
-
     print("Generated HLS URL:", hls_url)
-    return render_template('home.html', id=session["id"], hls_url=hls_url)
+    return render_template('home.html', id=session["id"], hls_url=hls_url, name=data["name"], profile=data["profile_picture"])
+
+@app.route("/profile")
+def profile():
+    endpoint_url = f"{api_url}/{session["id"]}"
+    # fetch user details from database to pass into profile page
+    try:
+        response = requests.get(endpoint_url)
+        data = response.json() 
+
+    except Exception as e:
+        print(f"Error: {e}")
+
+
+    return render_template("profile-page.html", id=session["id"], name=data["name"], email=data["email"], profile=data["profile_picture"], date_joined=data["date_joined"])
 
 
 
