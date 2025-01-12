@@ -10,8 +10,8 @@ import json
 print("Starting buzzer script...")
 
 bz = Buzzer(2)
-indicator_led = LED(4)
-flashing_led = LED(21)
+indicator_led = LED(18)
+flashing_led = LED(17)
 
 
 load_dotenv(override=True)

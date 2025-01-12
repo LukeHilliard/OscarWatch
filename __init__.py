@@ -30,9 +30,8 @@ ALLOWED_EXTENSIONS = {'webm'}
 app = Flask(__name__)
 app.secret_key = os.getenv("APP_SECRET_KEY")
 
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['UPLOAD_FOLDER'] = "/var/www/OscarWatchApp/OscarWatch/uploads/"
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16 MB limit
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 # check if the uploaded file extension is within the allowed extensions
 def allowed_file(filename):
@@ -247,7 +246,7 @@ def get_pubnub_keys():
 
 
 # uploading files with flask: https://flask.palletsprojects.com/en/stable/patterns/fileuploads/?utm_source=chatgpt.com
-@app.route('/upload', methods=['POST'])
+@app.route("/upload", methods=["POST", "GET"])
 def upload_file():
     if 'audio' not in request.files:
         return jsonify({'error': 'No file part'}), 400

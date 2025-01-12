@@ -10,7 +10,7 @@ import json
 print("Starting audio-led script...")
 
 
-indicator_led = LED(18)
+indicator_led = LED(14)
 
 load_dotenv(override=True)
 sensors_list = ["led"]

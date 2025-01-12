@@ -44,8 +44,8 @@ function uploadRecording(blob) {
     const formData = new FormData();
     formData.append("audio", blob, "recording.webm");
 
-    fetch("/upload", {
-        method: "POST",
+    fetch('/upload', {
+        method: 'POST',
         body: formData,
     })
     .then(response => response.json())
