@@ -33,11 +33,12 @@ const setupPubnub = async ()  => {
     try {
         console.log("Fetching keys...")
         const response = await fetch("/get_pubnub_keys")
-        const keys = await response.json()
+        const keys = await response.json() 
 
+        // TODO figure out why the /get_pubnub_keys works locally but not on aws
         pubnub = new PubNub({
-            publishKey: keys.publishKey,
-            subscribeKey: keys.subscribeKey,
+            publishKey: "pub-c-426e46d6-1500-4861-b24b-8a40e4fa9564",
+            subscribeKey: "sub-c-5fea9fd9-f8ca-4292-8498-def461ba9272",
             userId: 'OscarWatch-user',
         });
         const channel = pubnub.channel(appChannel)
@@ -66,6 +67,16 @@ function handleBuzzerClicked() {
     console.log("published message to PubNub (buzzer)")
 }
 
+// both functions send a message to pubnub to turn the green LED on and off as audio is being recorded
+function handleAudioRecordingStarted() {
+    publishMessage({"recording":"True"})
+    console.log("Published message to pubnub (led)")
+}
+function handleAudioRecordingStopped() {
+    publishMessage({"recording":"False"})
+    console.log("Published message to pubnub (led)")
+}
+
 
 
 
@@ -86,3 +97,4 @@ const publishMessage = async(message) => {
     }
     await pubnub.publish(publishPayload)
 }
+

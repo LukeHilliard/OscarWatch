@@ -1,87 +1,54 @@
-let preview = document.getElementById("preview");
-let recording = document.getElementById("recording");
-let startButton = document.getElementById("startButton");
-let stopButton = document.getElementById("stopButton");
-let downloadButton = document.getElementById("downloadButton");
-let logElement = document.getElementById("log");
+// referenced from: https://developer.mozilla.org/en-US/play
 
-let recordingTimeMS = 5000;
+const startButton = document.getElementById('start');
+const stopButton = document.getElementById('stop');
+const playback = document.getElementById('playback');
 
-function log(msg) {
-  logElement.innerText += `${msg}\n`;
-}
+let mediaRecorder;
+let audioChunks = [];
 
-function wait(delayInMS) {
-  return new Promise((resolve) => setTimeout(resolve, delayInMS));
-}
+startButton.addEventListener('click', async () => {
+    startButton.disabled = true;
+    stopButton.disabled = false;
 
-function startRecording(stream, lengthInMS) {
-  let recorder = new MediaRecorder(stream);
-  let data = [];
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
 
-  recorder.ondataavailable = (event) => data.push(event.data);
-  recorder.start();
-  log(`${recorder.state} for ${lengthInMS / 1000} seconds…`);
+        mediaRecorder.ondataavailable = (event) => {
+            if (event.data.size > 0) {
+                audioChunks.push(event.data);
+            }
+        };
 
-  let stopped = new Promise((resolve, reject) => {
-    recorder.onstop = resolve;
-    recorder.onerror = (event) => reject(event.name);
-  });
+        mediaRecorder.onstop = () => {
+            const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+            playback.src = URL.createObjectURL(audioBlob);
+            uploadRecording(audioBlob);
+            audioChunks = [];
+        };
 
-  let recorded = wait(lengthInMS).then(() => {
-    if (recorder.state === "recording") {
-      recorder.stop();
+        mediaRecorder.start();
+    } catch (err) {
+        console.error("Error accessing media devices:", err);
     }
-  });
+});
 
-  return Promise.all([stopped, recorded]).then(() => data);
+stopButton.addEventListener("click", () => {
+    startButton.disabled = false;
+    stopButton.disabled = true;
+    mediaRecorder.stop();
+});
+
+function uploadRecording(blob) {
+    const formData = new FormData();
+    formData.append("audio", blob, "recording.webm");
+
+    fetch("/upload", {
+        method: "POST",
+        body: formData,
+    })
+    .then(response => response.json())
+    .then(data => console.log("Upload successful:" +  data))
+    .catch(error => console.error("Upload error:" +  error))
 }
-
-function stop(stream) {
-  stream.getTracks().forEach((track) => track.stop());
-}
-
-startButton.addEventListener(
-  "click",
-  () => {
-    navigator.mediaDevices
-      .getUserMedia({
-        video: true,
-        audio: true,
-      })
-      .then((stream) => {
-        preview.srcObject = stream;
-        downloadButton.href = stream;
-        preview.captureStream =
-          preview.captureStream || preview.mozCaptureStream;
-        return new Promise((resolve) => (preview.onplaying = resolve));
-      })
-      .then(() => startRecording(preview.captureStream(), recordingTimeMS))
-      .then((recordedChunks) => {
-        let recordedBlob = new Blob(recordedChunks, { type: "video/webm" });
-        recording.src = URL.createObjectURL(recordedBlob);
-        downloadButton.href = recording.src;
-        downloadButton.download = "RecordedVideo.webm";
-
-        log(
-          `Successfully recorded ${recordedBlob.size} bytes of ${recordedBlob.type} media.`,
-        );
-      })
-      .catch((error) => {
-        if (error.name === "NotFoundError") {
-          log("Camera or microphone not found. Can't record.");
-        } else {
-          log(error);
-        }
-      });
-  },
-  false,
-);
-
-stopButton.addEventListener(
-  "click",
-  () => {
-    stop(preview.srcObject);
-  },
-  false,
-);
