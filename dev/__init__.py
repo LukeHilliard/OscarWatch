@@ -31,7 +31,7 @@ ALLOWED_EXTENSIONS = {'webm'}
 app = Flask(__name__)
 app.secret_key = os.getenv("APP_SECRET_KEY")
 
-app.config['UPLOAD_FOLDER'] = "/var/www/OscarWatchApp/OscarWatch/uploads/"
+app.config['UPLOAD_FOLDER'] = "/uploads"
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16 MB limit
 
 # check if the uploaded file extension is within the allowed extensions
@@ -49,10 +49,10 @@ flow = Flow.from_client_secrets_file(
         "https://www.googleapis.com/auth/userinfo.email",
         "openid",
     ],
-    redirect_uri = "https://oscarwatch.online/callback",
+    redirect_uri = "https://0e0a-86-46-231-56.ngrok-free.app/callback",
 )
 
-api_url = "https://api.oscarwatch.online/api"
+api_url = "http://0.0.0.0:80/api"
 
 def login_required(function):
     def wrapper(*args, **kwargs):
