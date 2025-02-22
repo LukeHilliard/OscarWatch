@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+{% block title %}
+Home - How is he?
+{% endblock %}
+{% block body_class %}
+no-scroll
+{% endblock%}
+
+{% block body %}
+
+<input type="hidden" id="user_id" value="{{ id }}"/>
+
+<nav class="navbar navbar-expand-sm">
+        <!-- Logo -->
+        <span class="navbar-brand" href="#">
+            <img src="../static/images/oscarwatch_logo.png" id="profile-picture" class="d-inline-block align-top" alt=""/>
+            <span class="brand-name">OscarWatch</span>
+        </span>
+
+        <!-- Dropdown for User Avatar -->
+        <div class="dropdown ms-auto">
+            <a class="d-flex align-items-center text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
+                <img src="{{ profile }}" id="profile-picture" class="rounded-circle me-2" alt="User Avatar" >
+                <span id="username-placeholder"></span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                <li><a class="dropdown-item" href="/profile">Profile</a></li>
+                <li><a class="dropdown-item" href="#">Your Gallery</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="/logout">Logout</a></li>
+            </ul>
+        </div>
+</nav>    
+
+<canvas id="screenshot-canvas" style="display: none;"></canvas>
+<div class="video-container">
+    <!-- Content Row -->
+    <div class="content-row">
+        <!-- Side Controls -->
+        <div class="side-controls">
+            <!-- Buzzer -->
+            <div class="control" onclick="handleBuzzerClicked()">
+                <img src="{{ url_for('static', filename='images/controls/buzzer.svg')}}" alt="Buzzer icon"/></button>
+                <p>Buzz him</p>
+            </div>
+
+            <!-- Send voice -->
+            <div class="control">
+                <img data-bs-toggle="modal" data-bs-target="#exampleModal" src="{{ url_for('static', filename='images/controls/audio.svg')}}" alt="Microphone icon"/>
+                <p>Speak to him</p>
+            </div>
+
+            <!-- Take screenshot -->
+            <div class="control" onclick="handleScreenshotClicked()">
+                <img  src="{{ url_for('static', filename='images/controls/image.svg')}}" alt="Screenshot icon"/>
+                <p>Screenshot</p>
+            </div>
+
+            <!-- Take video clip -->
+            <div class="control">
+                <img src="{{ url_for('static', filename='images/controls/video.svg')}}" alt="Video icon"/>
+                <p>30 second clip</p>
+            </div>
+
+            
+        </div>
+
+        <!-- Video Section -->
+        <div class="video-container">
+            <video id="video-player" class="video-player" controls autoplay muted>
+                <source src="" type="application/x-mpegURL">
+                Your browser does not support the video tag.
+            </video>
+
+            <div class="sensor-data">
+                <p>Temperature: <span id="temperature_c">--</span> °C</p>
+                <p>Humidity: <span id="humidity">--</span> %</p>
+            </div>
+        </div>
+
+        <img id="screenshot-preview" class="screenshot" alt="Screenshot preview" style="display: none;"/>
+    </div>
+</div>
+
+
+  <!-- modal taken from: https://getbootstrap.com/docs/4.0/components/modal/ -->
+  <!-- audio recorder taken from: https://developer.mozilla.org/en-US/docs/Web/API/MediaStream_Recording_API/Using_the_MediaStream_Recording_API-->
+  <!-- Modal Structure -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Send Oscar a message!</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <h1>Record Your Voice</h1>
+            <button onclick="handleAudioRecordingStarted()"id="start">Start Recording</button>
+            <button onclick="handleAudioRecordingStopped()" id="stop" disabled>Stop Recording</button>
+            <audio id="playback" controls></audio>
+            <script src="{{ url_for('static', filename='js/audio-recorder.js') }}"></script>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+<script>
+
+    // when the page loads the users name and profile picture are fetched from the FastAPI to display, the initial HLS URL is called here also
+    document.addEventListener("DOMContentLoaded", async function() {   
+
+        const video = document.getElementById("video-player");
+        const source = video.querySelector("source");
+        const hlsUrl = "{{ hls_url }}"
+
+        // Use hls.js if the browser doesn't support HLS natively
+        if (Hls.isSupported()) {
+            const hls = new Hls();
+            hls.loadSource(hlsUrl);
+            hls.attachMedia(video);
+            hls.on(Hls.Events.MANIFEST_PARSED, function () {
+                video.play();
+            });
+        } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+            // For Safari and other HLS-native browsers
+            video.src = hlsUrl;
+            video.load();
+            video.play();
+        } else {
+            console.error("HLS is not supported in this browser.");
+            alert("Your browser does not support HLS playback.");
+        }
+    })
+    
+</script>
+{% endblock %}
+
