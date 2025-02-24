@@ -141,7 +141,7 @@ def register_with_google():
 def index():
     #if "google_id" in session:
      #   return redirect('home.html')
-    return render_template("index.html")
+    return render_template("landing.html")
 
 @app.route("/keep_alive")
 def keep_alive():

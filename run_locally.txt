@@ -1,0 +1,13 @@
+1) run flask app @ 127.0.0.1:5000
+
+2) cd dev/pymongo-api
+3) run uvicorn @ uvicorn main:app --host 0.0.0.0 --port 80
+
+Google SSO will NOT work in dev only live
+
+Test account
+email:test@test.test
+pw:test
+
+** to access the home page the AWS credentials must be hardcoded. They will not read from .env at the moment of writing.
+** be sure to remove these credentials before pushing code to GitHub
