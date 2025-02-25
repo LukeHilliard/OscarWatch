@@ -1,0 +1,7 @@
+#header-container {
+    display: flex;
+    background-color: #A4DCEB;
+    box-shadow: 4px 4px 6px #888888;
+    flex-direction: row;
+    justify-content: space-between;
+}
