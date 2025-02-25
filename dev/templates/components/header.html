@@ -1,14 +1,14 @@
-<nav class="navbar navbar-expand-sm">
+<nav class="navbar navbar-expand-sm" id="header-container">
     <!-- Logo -->
     <span class="navbar-brand" href="#">
-        <img src="../static/images/oscarwatch_logo.png" id="profile-picture" class="d-inline-block align-top" alt=""/>
+        <img src="../static/images/oscarwatch_logo.png" id="logo" class="d-inline-block align-top" alt="OscarWatch Logo" />
         <span class="brand-name">OscarWatch</span>
     </span>
 
     <!-- Dropdown for User Avatar -->
     <div class="dropdown ms-auto">
-        <a class="d-flex align-items-center text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
-            <img src="{{ profile }}" id="profile-picture" class="rounded-circle me-2" alt="User Avatar" >
+        <a class="d-flex align-items-center text-decoration-none dropdown-toggle" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <img src="{{ profile }}" id="profile-picture" class="rounded-circle me-2" alt="User Avatar" style="width: 50px; height: 50px;">
             <span id="username-placeholder"></span>
         </a>
         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
@@ -18,4 +18,4 @@
             <li><a class="dropdown-item" href="/logout">Logout</a></li>
         </ul>
     </div>
-</nav>  
+</nav>
