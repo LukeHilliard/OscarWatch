@@ -1,0 +1,21 @@
+<nav class="navbar navbar-expand-sm">
+    <!-- Logo -->
+    <span class="navbar-brand" href="#">
+        <img src="../static/images/oscarwatch_logo.png" id="profile-picture" class="d-inline-block align-top" alt=""/>
+        <span class="brand-name">OscarWatch</span>
+    </span>
+
+    <!-- Dropdown for User Avatar -->
+    <div class="dropdown ms-auto">
+        <a class="d-flex align-items-center text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
+            <img src="{{ profile }}" id="profile-picture" class="rounded-circle me-2" alt="User Avatar" >
+            <span id="username-placeholder"></span>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+            <li><a class="dropdown-item" href="/profile">Profile</a></li>
+            <li><a class="dropdown-item" href="#">Your Gallery</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="/logout">Logout</a></li>
+        </ul>
+    </div>
+</nav>  

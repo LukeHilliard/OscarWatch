@@ -10,60 +10,14 @@ no-scroll
 
 <input type="hidden" id="user_id" value="{{ id }}"/>
 
-<nav class="navbar navbar-expand-sm">
-        <!-- Logo -->
-        <span class="navbar-brand" href="#">
-            <img src="../static/images/oscarwatch_logo.png" id="profile-picture" class="d-inline-block align-top" alt=""/>
-            <span class="brand-name">OscarWatch</span>
-        </span>
-
-        <!-- Dropdown for User Avatar -->
-        <div class="dropdown ms-auto">
-            <a class="d-flex align-items-center text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
-                <img src="{{ profile }}" id="profile-picture" class="rounded-circle me-2" alt="User Avatar" >
-                <span id="username-placeholder"></span>
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                <li><a class="dropdown-item" href="/profile">Profile</a></li>
-                <li><a class="dropdown-item" href="#">Your Gallery</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="/logout">Logout</a></li>
-            </ul>
-        </div>
-</nav>    
+{% include "components/header.html" %}
 
 <canvas id="screenshot-canvas" style="display: none;"></canvas>
 <div class="video-container">
     <!-- Content Row -->
     <div class="content-row">
         <!-- Side Controls -->
-        <div class="side-controls">
-            <!-- Buzzer -->
-            <div class="control" onclick="handleBuzzerClicked()">
-                <img src="{{ url_for('static', filename='images/controls/buzzer.svg')}}" alt="Buzzer icon"/></button>
-                <p>Buzz him</p>
-            </div>
-
-            <!-- Send voice -->
-            <div class="control">
-                <img data-bs-toggle="modal" data-bs-target="#exampleModal" src="{{ url_for('static', filename='images/controls/audio.svg')}}" alt="Microphone icon"/>
-                <p>Speak to him</p>
-            </div>
-
-            <!-- Take screenshot -->
-            <div class="control" onclick="handleScreenshotClicked()">
-                <img  src="{{ url_for('static', filename='images/controls/image.svg')}}" alt="Screenshot icon"/>
-                <p>Screenshot</p>
-            </div>
-
-            <!-- Take video clip -->
-            <div class="control">
-                <img src="{{ url_for('static', filename='images/controls/video.svg')}}" alt="Video icon"/>
-                <p>30 second clip</p>
-            </div>
-
-            
-        </div>
+        {% include "components/sideBar.html" %}
 
         <!-- Video Section -->
         <div class="video-container">
@@ -73,8 +27,8 @@ no-scroll
             </video>
 
             <div class="sensor-data">
-                <p>Temperature: <span id="temperature_c">--</span> °C</p>
-                <p>Humidity: <span id="humidity">--</span> %</p>
+                <p>Temperature: <span id="temperature_c">--.--</span> °C</p>
+                <p>Humidity: <span id="humidity">--.--</span> %</p>
             </div>
         </div>
 
