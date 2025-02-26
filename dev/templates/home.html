@@ -13,28 +13,29 @@ no-scroll
 {% include "components/header.html" %}
 
 <canvas id="screenshot-canvas" style="display: none;"></canvas>
-<div class="video-container">
-    <!-- Content Row -->
+  <div class="content-container">
     <div class="content-row">
-        <!-- Side Controls -->
-        {% include "components/sideBar.html" %}
+      {% include "components/sideBar.html" %}
+    
 
         <!-- Video Section -->
         <div class="video-container">
-            <video id="video-player" class="video-player" controls autoplay muted>
-                <source src="" type="application/x-mpegURL">
-                Your browser does not support the video tag.
-            </video>
+          <video id="video-player" class="video-player" controls autoplay muted>
+              <source src="" type="application/x-mpegURL">
+              Your browser does not support the video tag.
+          </video>
 
-            <div class="sensor-data">
-                <p>Temperature: <span id="temperature_c">--.--</span> °C</p>
-                <p>Humidity: <span id="humidity">--.--</span> %</p>
-            </div>
-        </div>
+          <div class="sensor-data">
+              <p>Temperature: <span id="temperature_c">--</span> °C</p>
+              <p>Humidity: <span id="humidity">--</span> %</p>
+          </div>
+      </div>
 
-        <img id="screenshot-preview" class="screenshot" alt="Screenshot preview" style="display: none;"/>
+      <img id="screenshot-preview" class="screenshot" alt="Screenshot preview" style="display: none;"/>
     </div>
-</div>
+  </div>
+
+
 
 
   <!-- modal taken from: https://getbootstrap.com/docs/4.0/components/modal/ -->

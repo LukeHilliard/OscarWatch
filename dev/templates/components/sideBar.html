@@ -1,14 +1,16 @@
 <div class="side-controls">
-    <!-- Buzzer -->
-    <div class="control" onclick="handleBuzzerClicked()">
-        <img src="{{ url_for('static', filename='images/controls/buzzer.svg')}}" alt="Buzzer icon"/></button>
-        <p>Buzz him</p>
+
+    <!-- Take video clip -->
+    <div class="control">
+        <img src="{{ url_for('static', filename='images/controls/video.svg')}}" alt="Video icon"/>
+        <p>Video</p>
     </div>
+    
 
     <!-- Send voice -->
     <div class="control">
         <img data-bs-toggle="modal" data-bs-target="#exampleModal" src="{{ url_for('static', filename='images/controls/audio.svg')}}" alt="Microphone icon"/>
-        <p>Speak to him</p>
+        <p>Speak</p>
     </div>
 
     <!-- Take screenshot -->
@@ -17,10 +19,10 @@
         <p>Screenshot</p>
     </div>
 
-    <!-- Take video clip -->
-    <div class="control">
-        <img src="{{ url_for('static', filename='images/controls/video.svg')}}" alt="Video icon"/>
-        <p>30 second clip</p>
+    <!-- Buzzer -->
+    <div class="control" onclick="handleBuzzerClicked()">
+        <img src="{{ url_for('static', filename='images/controls/buzzer.svg')}}" alt="Buzzer icon"/></button>
+        <p>Buzz</p>
     </div>
 
     

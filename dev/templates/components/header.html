@@ -7,9 +7,9 @@
 
     <!-- Dropdown for User Avatar -->
     <div class="dropdown ms-auto">
-        <a class="d-flex align-items-center text-decoration-none dropdown-toggle" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <a class="d-flex align-items-center text-decoration-none" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <span id="username-placeholder">{{ name }}</span>
             <img src="{{ profile }}" id="profile-picture" class="rounded-circle me-2" alt="User Avatar" style="width: 50px; height: 50px;">
-            <span id="username-placeholder"></span>
         </a>
         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
             <li><a class="dropdown-item" href="/profile">Profile</a></li>
@@ -18,4 +18,5 @@
             <li><a class="dropdown-item" href="/logout">Logout</a></li>
         </ul>
     </div>
+    
 </nav>
